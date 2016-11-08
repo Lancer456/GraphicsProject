@@ -12,8 +12,8 @@ var scene = new THREE.Scene;
 
 // create simple geometry and add to scene
 var cubeGeometry = new THREE.CubeGeometry(15,15, 15);
-//var cubeMaterial = new THREE.MeshLambertMaterial({ map: THREE.ImageUtils.loadTexture('crate.jpg')});
-var cubeMaterial = new THREE.MeshLambertMaterial({ color: 0xddaa66});
+var cubeMaterial = new THREE.MeshLambertMaterial({ map: THREE.ImageUtils.loadTexture('crate.jpg')});
+// var cubeMaterial = new THREE.MeshLambertMaterial({ color: 0xddaa66});
 var cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
  
  
@@ -37,12 +37,12 @@ scene.add(cube);
 
 
 
-/*
+
 var skyboxGeometry = new THREE.CubeGeometry(10000, 10000, 10000);
 var skyboxMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000, side: THREE.DoubleSide });
 var skybox = new THREE.Mesh(skyboxGeometry, skyboxMaterial);
 scene.add(skybox);
- */
+
  
 renderer.render(scene, camera);
 
