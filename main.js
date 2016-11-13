@@ -12,7 +12,7 @@ var scene = new THREE.Scene;
 
 // create simple geometry and add to scene
 var cubeGeometry = new THREE.CubeGeometry(15,15, 15);
-var cubeMaterial = new THREE.MeshLambertMaterial({ map: THREE.ImageUtils.loadTexture('crate.jpg')});
+var cubeMaterial = new THREE.MeshLambertMaterial({ map: THREE.ImageUtils.loadTexture('house.png')});
 // var cubeMaterial = new THREE.MeshLambertMaterial({ color: 0xddaa66});
 var cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
  
