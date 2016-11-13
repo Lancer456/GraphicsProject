@@ -1,21 +1,2 @@
 # GraphicsProject
 The CS4830 Computer Graphics Final Project
-
-
-asjdflkjashdlfh
-asdfas
-asdfasasdfWhat???????????????????????
-DING
-DINGD
-DING
-
-
-df
-asdfasasdfdfa
-sdg
-asdga
-dfsg;oiajdf'gjas
-fhj;oadfjg
-p'ajsfdg;ajsfg
-[ojanf'gjas'
-fgj]
