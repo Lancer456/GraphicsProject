@@ -1,4 +1,5 @@
 
+currentlyPressedKeys = [];
 window.onload = function init()
 {
     window.addEventListener("keydown", function(event) {
@@ -8,36 +9,11 @@ window.onload = function init()
     window.addEventListener("keyup", function(event) {
 		currentlyPressedKeys[event.keyCode] = false;
     });
-	
-    canvas = document.getElementById( "gl-canvas" );
-
-    gl = WebGLUtils.setupWebGL( canvas );
-    if ( !gl ) { alert( "WebGL isn't available" ); }
-    //
-    //  Configure WebGL
-    //
-    gl.viewport( 0, 0, canvas.width, canvas.height );
-    gl.clearColor( 1.0, 1.0, 1.0, 1.0 );
-
-    //  Load shaders and initialize attribute buffers
-
-    program = initShaders( gl, "vertex-shader", "fragment-shader" );
-    gl.useProgram( program );
-	
-	gl.enable(gl.DEPTH_TEST);
-	
-    window.addEventListener("mousemove", function(event) {
-		var mousePos = getMousePos(canvas, event);
-		mouseX = ((mousePos.x / canvas.width) -0.5) * 2.0;
-		mouseY = (((canvas.height - mousePos.y) / canvas.height)-0.5) * 2.0;
-
-    });
 
     render();
 }
 var width = window.innerWidth;
 var height = window.innerHeight;
-
 
 var renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(width, height);
@@ -47,20 +23,21 @@ document.body.appendChild(renderer.domElement);
 var scene = new THREE.Scene;
 
 // create simple geometry and add to scene
-var cubeGeometry = new THREE.CubeGeometry(15,15, 15);
+var cubeGeometry = new THREE.CubeGeometry(1,1, 1);
 //var cubeMaterial = new THREE.MeshLambertMaterial({ map: THREE.ImageUtils.loadTexture('crate.jpg')});
 var cubeMaterial = new THREE.MeshLambertMaterial({ color: 0xddaa66});
 var cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
 
 // create perspective camera
 var camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 10000);
-camera.position.y = 16;
-camera.position.z = 40;
+camera.position.y = 10;
+camera.position.z = 0;
+camera.rotation.x = -Math.PI /2
 // add to scene and renderer
 scene.add(camera); 
 renderer.render(scene, camera);
 // create the view matrix
-camera.lookAt(cube.position);
+
 
 // add lighting and add to scene 
 var pointLight = new THREE.PointLight(0xaabbcc);
@@ -79,10 +56,29 @@ renderer.render(scene, camera);
 
 function handle_input()
 {
-    
+    if(currentlyPressedKeys[65] == true) //A key
+    {
+       camera.position.x -= .2;
+    }
+    if(currentlyPressedKeys[68] == true) //D key
+    {
+        camera.position.x +=.2;
+    }
+    if(currentlyPressedKeys[87] == true) //W key
+    {
+        camera.position.z -= .2;
+    }
+    if(currentlyPressedKeys[83] == true) //S key
+    {
+        camera.position.z +=.2;
+    }
+
+    //camera.lookAt(cube.position);
 }
 
-function render() {
+function render() 
+{
+    
     handle_input();
     renderer.render(scene, camera);
     requestAnimationFrame(render);
