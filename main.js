@@ -1,4 +1,40 @@
 
+window.onload = function init()
+{
+    window.addEventListener("keydown", function(event) {
+		currentlyPressedKeys[event.keyCode] = true;
+    });
+    
+    window.addEventListener("keyup", function(event) {
+		currentlyPressedKeys[event.keyCode] = false;
+    });
+	
+    canvas = document.getElementById( "gl-canvas" );
+
+    gl = WebGLUtils.setupWebGL( canvas );
+    if ( !gl ) { alert( "WebGL isn't available" ); }
+    //
+    //  Configure WebGL
+    //
+    gl.viewport( 0, 0, canvas.width, canvas.height );
+    gl.clearColor( 1.0, 1.0, 1.0, 1.0 );
+
+    //  Load shaders and initialize attribute buffers
+
+    program = initShaders( gl, "vertex-shader", "fragment-shader" );
+    gl.useProgram( program );
+	
+	gl.enable(gl.DEPTH_TEST);
+	
+    window.addEventListener("mousemove", function(event) {
+		var mousePos = getMousePos(canvas, event);
+		mouseX = ((mousePos.x / canvas.width) -0.5) * 2.0;
+		mouseY = (((canvas.height - mousePos.y) / canvas.height)-0.5) * 2.0;
+
+    });
+
+    render();
+}
 var width = window.innerWidth;
 var height = window.innerHeight;
 
@@ -15,8 +51,6 @@ var cubeGeometry = new THREE.CubeGeometry(15,15, 15);
 //var cubeMaterial = new THREE.MeshLambertMaterial({ map: THREE.ImageUtils.loadTexture('crate.jpg')});
 var cubeMaterial = new THREE.MeshLambertMaterial({ color: 0xddaa66});
 var cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
- 
- 
 
 // create perspective camera
 var camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 10000);
@@ -34,9 +68,6 @@ pointLight.position.set(10, 16, 16);
 scene.add(pointLight);
 scene.add(cube);
 
-
-
-
 /*
 var skyboxGeometry = new THREE.CubeGeometry(10000, 10000, 10000);
 var skyboxMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000, side: THREE.DoubleSide });
@@ -46,8 +77,13 @@ scene.add(skybox);
  
 renderer.render(scene, camera);
 
+function handle_input()
+{
+    
+}
 
 function render() {
+    handle_input();
     renderer.render(scene, camera);
     requestAnimationFrame(render);
     cube.rotation.y += 0.01;
