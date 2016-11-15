@@ -1,17 +1,6 @@
 
 currentlyPressedKeys = [];
-window.onload = function init()
-{
-    window.addEventListener("keydown", function(event) {
-		currentlyPressedKeys[event.keyCode] = true;
-    });
-    
-    window.addEventListener("keyup", function(event) {
-		currentlyPressedKeys[event.keyCode] = false;
-    });
 
-    render();
-}
 var width = window.innerWidth;
 var height = window.innerHeight;
 
@@ -24,18 +13,29 @@ var scene = new THREE.Scene;
 
 // create simple geometry and add to scene
 var cubeGeometry = new THREE.CubeGeometry(1,1, 1);
-//var cubeMaterial = new THREE.MeshLambertMaterial({ map: THREE.ImageUtils.loadTexture('crate.jpg')});
-var cubeMaterial = new THREE.MeshLambertMaterial({ color: 0xddaa66});
-var player = new THREE.Mesh(cubeGeometry, cubeMaterial);
 
+//var cubeMaterial = new THREE.MeshLambertMaterial({ map: THREE.ImageUtils.loadTexture('crate.jpg')});
+var cubeMaterial = new THREE.MeshLambertMaterial({ color: 0xff0000});
+var player = new THREE.Mesh(cubeGeometry, cubeMaterial); // Cube object is a stand in for the player model
+
+var sphereGeom = new THREE.SphereGeometry(1);
+var sphere = new THREE.Mesh(sphereGeom, cubeMaterial);
+sphere.position.set(2, 0, 1)
+
+var geometry = new THREE.PlaneGeometry( 5, 5, 32 );
+var material = new THREE.MeshBasicMaterial( {color: 0xffffff, side: THREE.DoubleSide} );
+var plane = new THREE.Mesh( geometry, material );
+plane.rotation.x = Math.PI / 2;
 // create perspective camera
 var camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 10000);
 camera.position.y = 5;
 camera.position.z = 0;
 camera.rotation.x = -Math.PI /2 + (1/4);
+
 // add to scene and renderer
 scene.add(camera); 
 renderer.render(scene, camera);
+
 // create the view matrix
 
 
@@ -44,6 +44,21 @@ var pointLight = new THREE.PointLight(0xaabbcc);
 pointLight.position.set(10, 16, 16);
 scene.add(pointLight);
 scene.add(player);
+scene.add(sphere);
+scene.add(plane)
+
+window.onload = function init()
+{
+    window.addEventListener("keydown", function(event) {
+		currentlyPressedKeys[event.keyCode] = true;
+    });
+    
+    window.addEventListener("keyup", function(event) {
+		currentlyPressedKeys[event.keyCode] = false;
+    });
+
+    render();
+}
 
 /*
 var skyboxGeometry = new THREE.CubeGeometry(10000, 10000, 10000);
