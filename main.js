@@ -29,7 +29,7 @@ plane.rotation.x = Math.PI / 2;
 // create perspective camera
 var camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 10000);
 camera.position.y = 5;
-camera.position.z = 0;
+camera.position.z = 1;
 camera.rotation.x = -Math.PI /2 + (1/4);
 
 // add to scene and renderer
@@ -74,18 +74,22 @@ function handle_input()
     if(currentlyPressedKeys[65] == true) //A key
     {
        camera.position.x -= .2;
+       player.position.x -= .2;
     }
     if(currentlyPressedKeys[68] == true) //D key
     {
         camera.position.x +=.2;
+        player.position.x += .2;
     }
     if(currentlyPressedKeys[87] == true) //W key
     {
         camera.position.z -= .2;
+        player.position.z -= .2;
     }
     if(currentlyPressedKeys[83] == true) //S key
     {
         camera.position.z +=.2;
+        player.position.z += .2;
     }
 
     //camera.lookAt(cube.position);
