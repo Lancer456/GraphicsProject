@@ -26,13 +26,13 @@ var scene = new THREE.Scene;
 var cubeGeometry = new THREE.CubeGeometry(1,1, 1);
 //var cubeMaterial = new THREE.MeshLambertMaterial({ map: THREE.ImageUtils.loadTexture('crate.jpg')});
 var cubeMaterial = new THREE.MeshLambertMaterial({ color: 0xddaa66});
-var cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
+var player = new THREE.Mesh(cubeGeometry, cubeMaterial);
 
 // create perspective camera
 var camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 10000);
-camera.position.y = 10;
+camera.position.y = 5;
 camera.position.z = 0;
-camera.rotation.x = -Math.PI /2
+camera.rotation.x = -Math.PI /2 + (1/4);
 // add to scene and renderer
 scene.add(camera); 
 renderer.render(scene, camera);
@@ -43,7 +43,7 @@ renderer.render(scene, camera);
 var pointLight = new THREE.PointLight(0xaabbcc);
 pointLight.position.set(10, 16, 16);
 scene.add(pointLight);
-scene.add(cube);
+scene.add(player);
 
 /*
 var skyboxGeometry = new THREE.CubeGeometry(10000, 10000, 10000);
@@ -82,7 +82,7 @@ function render()
     handle_input();
     renderer.render(scene, camera);
     requestAnimationFrame(render);
-    cube.rotation.y += 0.01;
+    player.rotation.y += 0.01;
 	
 }
 render();
