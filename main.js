@@ -72,29 +72,44 @@ renderer.render(scene, camera);
 
 function handle_input()
 {
+    var speed = 0.05
+    
+    /*
+    if((player.position.x == 0) || (player.position.z == 0) || (player.position.x == 5) || (player.position.z == 5))
+    {
+        speed = 0;
+    }
+    */
     if(currentlyPressedKeys[65] == true) //A key
     {
-       camera.position.x -= .2;
-       player.position.x -= .2;
+       camera.position.x -= speed;
+       player.position.x -= speed;
     }
     if(currentlyPressedKeys[68] == true) //D key
     {
-        camera.position.x +=.2;
-        player.position.x += .2;
+        camera.position.x += speed;
+        player.position.x += speed;
     }
     if(currentlyPressedKeys[87] == true) //W key
     {
-        camera.position.z -= .2;
-        player.position.z -= .2;
+        camera.position.z -= speed;
+        player.position.z -= speed;
     }
     if(currentlyPressedKeys[83] == true) //S key
     {
-        camera.position.z +=.2;
-        player.position.z += .2;
+        camera.position.z += speed;
+        player.position.z += speed;
     }
 
     //camera.lookAt(cube.position);
 }
+
+
+
+
+
+
+
 
 function render() 
 {
