@@ -17,7 +17,7 @@ var cubeGeometry = new THREE.CubeGeometry(1,1, 1);
 var cubeMaterial = new THREE.MeshLambertMaterial({ color: 0xff0000});
 var player = new THREE.Mesh(cubeGeometry, cubeMaterial); // Cube object is a stand in for the player model
 
-var sphereGeom = new THREE.SphereGeometry(1);
+var sphereGeom = new THREE.SphereGeometry(1, 500);
 var sphere = new THREE.Mesh(sphereGeom, cubeMaterial);
 sphere.position.set(2, 0, 1)
 collidableMeshes.push(sphere);
