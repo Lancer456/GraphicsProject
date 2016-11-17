@@ -104,6 +104,25 @@ function handle_input()
     //camera.lookAt(cube.position);
 }
 
+function detect_collisions()
+{
+    //Collision detection pulled from view-source:http://stemkoski.github.io/Three.js/Collision-Detection.html
+
+    var originPoint = MovingCube.position.clone();
+    
+    for (var vertexIndex = 0; vertexIndex < player.geometry.vertices.length; vertexIndex++)
+	{	
+		var localVertex = player.geometry.vertices[vertexIndex].clone();
+		var globalVertex = localVertex.applyMatrix4( player.matrix );
+		var directionVector = globalVertex.sub( player.position );
+		
+		var ray = new THREE.Raycaster( originPoint, directionVector.clone().normalize() );
+		var collisionResults = ray.intersectObjects( collidableMeshList );
+		if ( collisionResults.length > 0 && collisionResults[0].distance < directionVector.length() ) 
+			appendText(" Hit ");
+	}	
+
+}
 
 
 
@@ -115,6 +134,7 @@ function render()
 {
     
     handle_input();
+    detect_collisions()
     renderer.render(scene, camera);
     requestAnimationFrame(render);	
 }
