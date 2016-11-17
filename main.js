@@ -108,8 +108,7 @@ function detect_collisions()
 {
     //Collision detection pulled from view-source:http://stemkoski.github.io/Three.js/Collision-Detection.html
 
-    var originPoint = MovingCube.position.clone();
-    
+    var originPoint = player.position.clone();
     for (var vertexIndex = 0; vertexIndex < player.geometry.vertices.length; vertexIndex++)
 	{	
 		var localVertex = player.geometry.vertices[vertexIndex].clone();
@@ -117,9 +116,9 @@ function detect_collisions()
 		var directionVector = globalVertex.sub( player.position );
 		
 		var ray = new THREE.Raycaster( originPoint, directionVector.clone().normalize() );
-		var collisionResults = ray.intersectObjects( collidableMeshList );
+		var collisionResults = ray.intersectObjects( collidableMeshes );
 		if ( collisionResults.length > 0 && collisionResults[0].distance < directionVector.length() ) 
-			appendText(" Hit ");
+			console.log("Hit")
 	}	
 
 }
