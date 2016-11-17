@@ -1,6 +1,6 @@
 
-currentlyPressedKeys = [];
-
+var currentlyPressedKeys = [];
+var collidableMeshes = [];
 var width = window.innerWidth;
 var height = window.innerHeight;
 
@@ -13,7 +13,6 @@ var scene = new THREE.Scene;
 
 // create simple geometry and add to scene
 var cubeGeometry = new THREE.CubeGeometry(1,1, 1);
-
 //var cubeMaterial = new THREE.MeshLambertMaterial({ map: THREE.ImageUtils.loadTexture('crate.jpg')});
 var cubeMaterial = new THREE.MeshLambertMaterial({ color: 0xff0000});
 var player = new THREE.Mesh(cubeGeometry, cubeMaterial); // Cube object is a stand in for the player model
@@ -21,11 +20,13 @@ var player = new THREE.Mesh(cubeGeometry, cubeMaterial); // Cube object is a sta
 var sphereGeom = new THREE.SphereGeometry(1);
 var sphere = new THREE.Mesh(sphereGeom, cubeMaterial);
 sphere.position.set(2, 0, 1)
+collidableMeshes.push(sphere);
 
 var geometry = new THREE.PlaneGeometry( 5, 5, 32 );
 var material = new THREE.MeshBasicMaterial( {color: 0xffffff, side: THREE.DoubleSide} );
 var plane = new THREE.Mesh( geometry, material );
 plane.rotation.x = Math.PI / 2;
+
 // create perspective camera
 var camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 10000);
 camera.position.y = 5;
@@ -100,9 +101,7 @@ function render()
     
     handle_input();
     renderer.render(scene, camera);
-    requestAnimationFrame(render);
-    player.rotation.y += 0.01;
-	
+    requestAnimationFrame(render);	
 }
-render();
+
 
