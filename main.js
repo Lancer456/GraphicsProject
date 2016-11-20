@@ -1,10 +1,11 @@
-var player, scene, plane, camera, pointLight, renderer;
-currentlyPressedKeys= [];
+var player, scene, plane, camera, pointLight, renderer, speed;
+var currentlyPressedKeys = [];
+var collidableMeshes = [];
 
-	var width= window.innerWidth;
-	var height= window.innerHeight;
+	var width = window.innerWidth;
+	var height = window.innerHeight;
 
-	renderer= new THREE.WebGLRenderer({ antialias: true });
+	renderer = new THREE.WebGLRenderer({ antialias: true });
 	renderer.setSize(width, height);
 	document.body.appendChild(renderer.domElement);
 	
@@ -62,24 +63,88 @@ window.onload= function init(){
 }
 
 function handle_input(){
-    if(currentlyPressedKeys[65] == true){ //A key
-       camera.position.x -= .2;
-       player.position.x -= .2;
+	speed = [0,0,0];
+	
+     if(currentlyPressedKeys[65] == true) //A key
+    {
+       speed[0] = -.05
     }
-    if(currentlyPressedKeys[68] == true){ //D key
-        camera.position.x += .2;
-        player.position.x += .2;
+    if(currentlyPressedKeys[68] == true) //D key
+    {
+        speed[0] = .05;
     }
-    if(currentlyPressedKeys[87] == true){ //W key
-        camera.position.z -= .2;
-        player.position.z -= .2;
+    if(currentlyPressedKeys[87] == true) //W key
+    {
+        speed[2] = -.05
     }
-    if(currentlyPressedKeys[83] == true){ //S key
-        camera.position.z += .2;
-        player.position.z += .2;
+    if(currentlyPressedKeys[83] == true) //S key
+    {
+        speed[2] = .05
     }
+	
 	if(currentlyPressedKeys[81] == true){ camera.position.y += .5; }
 	if(currentlyPressedKeys[69] == true){ camera.position.y -= .5; }
+}
+
+function detect_collisions()
+{
+    // Collision detection inspired by view-source:http://stemkoski.github.io/Three.js/Collision-Detection.html
+    //and http://webmaestro.fr/collisions-detection-three-js-raycasting/
+
+    this.rays = [
+        new THREE.Vector3(0, 0, 1),
+        new THREE.Vector3(1, 0, 1),
+        new THREE.Vector3(1, 0, 0),
+        new THREE.Vector3(1, 0, -1),
+        new THREE.Vector3(0, 0, -1),
+        new THREE.Vector3(-1, 0, -1),
+        new THREE.Vector3(-1, 0, 0),
+        new THREE.Vector3(-1, 0, 1)
+    ];
+
+    var originPoint = player.position.clone();
+    
+    for (var i = 0; i < rays.length; i++)
+	{	
+        
+		var directionVector = rays[i];
+        var ray = new THREE.Raycaster( originPoint, directionVector.clone().normalize() );
+		var maximumDist = .25;
+		var collisionResults = ray.intersectObjects( collidableMeshes );
+		if ( collisionResults.length > 0 && collisionResults[0].distance < maximumDist ) 
+        {
+            console.log("Hit");
+            if(directionVector.x > 0 && speed[0] > 0)
+            {
+                speed[0] = 0;
+            }
+            if(directionVector.x < 0 && speed[0] < 0)
+            {
+                speed[0] = 0;
+            }
+            if(directionVector.z < 0 && speed[2] < 0)
+            {
+                speed[2] = 0;
+            }
+            if(directionVector.z > 0 && speed[2] > 0)
+            {
+                speed[2] = 0;
+            }
+
+        }
+			
+
+	}	
+
+}
+
+function update_position()
+{
+    camera.position.x += speed[0];
+    player.position.x += speed[0];
+
+    camera.position.z += speed[2];
+    player.position.z += speed[2];
 }
 
 function setupMaze(){
