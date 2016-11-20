@@ -47,43 +47,46 @@ scene.add(player);
 scene.add(cube);
 scene.add(plane);
 
-window.onload= function init(){
-    window.addEventListener("keydown", function(event) {
+window.onload= function init()
+{
+    window.addEventListener("keydown", function(event) 
+    {
 		currentlyPressedKeys[event.keyCode] = true;
     });
     
-    window.addEventListener("keyup", function(event) {
+    window.addEventListener("keyup", function(event) 
+    {
 		currentlyPressedKeys[event.keyCode] = false;
     });
 
 	setupMaze();
     render();
 }
-
-
-
-
-function render() 
-{
     
-function handle_input(){
+function handle_input()
+{
     speed = [0,0,0]
 
-    if(currentlyPressedKeys[65] == true){ //A key
+    if(currentlyPressedKeys[65] == true)
+    { //A key
        speed[0]= -.05
     }
-    if(currentlyPressedKeys[68] == true){ //D key
+    if(currentlyPressedKeys[68] == true)
+    { //D key
         speed[0]= .05;
     }
-    if(currentlyPressedKeys[87] == true){ //W key
+    if(currentlyPressedKeys[87] == true) //W key
+    { 
         speed[2]= -.05
     }
-    if(currentlyPressedKeys[83] == true){ //S key
+    if(currentlyPressedKeys[83] == true) //S key
+    { 
         speed[2]= .05
     }
 }
 
-function detect_collisions(){
+function detect_collisions()
+{
     // Collision detection inspired by view-source:http://stemkoski.github.io/Three.js/Collision-Detection.html
     //and http://webmaestro.fr/collisions-detection-three-js-raycasting/
 
@@ -100,30 +103,37 @@ function detect_collisions(){
 
     var originPoint= player.position.clone();
     
-    for(var i=0; i<rays.length; i++){
+    for(var i=0; i<rays.length; i++)
+    {
 		var directionVector= rays[i];
         var ray= new THREE.Raycaster(originPoint, directionVector.clone().normalize());
 		var maximumDist= .25;
 		var collisionResults= ray.intersectObjects(collidableMeshes);
-		if (collisionResults.length > 0 && collisionResults[0].distance < maximumDist){
+		if (collisionResults.length > 0 && collisionResults[0].distance < maximumDist)
+        {
             console.log("Hit");
-            if(directionVector.x > 0 && speed[0] > 0){
+            if(directionVector.x > 0 && speed[0] > 0)
+            {
                 speed[0] = 0;
             }
-            if(directionVector.x < 0 && speed[0] < 0){
+            if(directionVector.x < 0 && speed[0] < 0)
+            {
                 speed[0] = 0;
             }
-            if(directionVector.z < 0 && speed[2] < 0){
+            if(directionVector.z < 0 && speed[2] < 0)
+            {
                 speed[2] = 0;
             }
-            if(directionVector.z > 0 && speed[2] > 0){
+            if(directionVector.z > 0 && speed[2] > 0)
+            {
                 speed[2] = 0;
             }
         }
 	}
 }
 
-function update_position(){
+function update_position()
+{
     camera.position.x += speed[0];
     player.position.x += speed[0];
 
@@ -131,7 +141,8 @@ function update_position(){
     player.position.z += speed[2];
 }
 
-function setupMaze(){
+function setupMaze()
+{
 	var wallGeometry= new THREE.CubeGeometry(0.5,5,5);
 	var wallMaterial= new THREE.MeshLambertMaterial({ color: 0x003399 });
 	var wall= new THREE.Mesh(wallGeometry, wallMaterial);
@@ -140,7 +151,8 @@ function setupMaze(){
 	scene.add(wall);
 }
 
-function render(){
+function render()
+{
     handle_input();
     detect_collisions();
     update_position();
@@ -148,5 +160,5 @@ function render(){
     requestAnimationFrame(render);	
     requestAnimationFrame(render);
 }
-render();
+
 
