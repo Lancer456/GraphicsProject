@@ -1,15 +1,6 @@
 var player, scene, plane, camera, pointLight, renderer;
 currentlyPressedKeys= [];
 
-window.onload= function init(){
-    window.addEventListener("keydown", function(event) {
-		currentlyPressedKeys[event.keyCode] = true;
-    });
-    
-    window.addEventListener("keyup", function(event) {
-		currentlyPressedKeys[event.keyCode] = false;
-    });
-	
 	var width= window.innerWidth;
 	var height= window.innerHeight;
 
@@ -54,6 +45,17 @@ window.onload= function init(){
 	scene.add(player);
 	scene.add(sphere);
 	scene.add(plane);
+
+window.onload= function init(){
+    window.addEventListener("keydown", function(event) {
+		currentlyPressedKeys[event.keyCode] = true;
+    });
+    
+    window.addEventListener("keyup", function(event) {
+		currentlyPressedKeys[event.keyCode] = false;
+    });
+	
+
 
 	setupMaze();
     render();
