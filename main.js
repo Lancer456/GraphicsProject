@@ -1,7 +1,11 @@
 
 var currentlyPressedKeys = [];
 var collidableMeshes = [];
- var speed = [0,0,0];
+//boolean array-used to detemine if the object is interactable
+var interactable = [];
+
+//velocity vector
+var speed = [0,0,0];
 
 var width = window.innerWidth;
 var height = window.innerHeight;
@@ -23,6 +27,7 @@ var sphereGeom = new THREE.SphereGeometry(.3, 50);
 var player = new THREE.Mesh(sphereGeom, cubeMaterial);
 cube.position.set(2, 0, 1)
 collidableMeshes.push(cube);
+interactable.push(true);
 
 var geometry = new THREE.PlaneGeometry( 5, 5, 32 );
 var material = new THREE.MeshBasicMaterial( {color: 0xffffff, side: THREE.DoubleSide} );
@@ -92,6 +97,17 @@ function handle_input()
     {
         speed[2] = .05
     }
+    if(currentlyPressedKeys[16] == true) //ShiftKey
+    {
+        for(var i = 0; i < speed.length; i++)
+        {
+            speed[i] = speed[i] * 1.5;
+        }
+    }
+    if(currentlyPressedKeys[69] == true) //E key
+    {
+        //
+    }
 
     //camera.lookAt(cube.position);
 }
@@ -119,7 +135,7 @@ function detect_collisions()
         
 		var directionVector = rays[i];
         var ray = new THREE.Raycaster( originPoint, directionVector.clone().normalize() );
-		var maximumDist = .25;
+		var maximumDist = .3;
 		var collisionResults = ray.intersectObjects( collidableMeshes );
 		if ( collisionResults.length > 0 && collisionResults[0].distance < maximumDist ) 
         {
@@ -142,11 +158,16 @@ function detect_collisions()
             }
 
         }
-			
 
 	}	
 
 }
+
+function interact()
+{
+
+}
+
 
 function update_position()
 {
