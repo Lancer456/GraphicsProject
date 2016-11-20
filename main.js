@@ -1,7 +1,5 @@
-
 var width = window.innerWidth;
 var height = window.innerHeight;
-
 
 var renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(width, height);
@@ -15,8 +13,8 @@ var cubeGeometry = new THREE.CubeGeometry(15,15, 15);
 var cubeMaterial = new THREE.MeshLambertMaterial({ map: THREE.ImageUtils.loadTexture('house.png')});
 // var cubeMaterial = new THREE.MeshLambertMaterial({ color: 0xddaa66});
 var cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
- 
- 
+
+
 
 // create perspective camera
 var camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 10000);
@@ -54,4 +52,3 @@ function render() {
 	
 }
 render();
-
