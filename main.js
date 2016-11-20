@@ -1,4 +1,3 @@
-
 var currentlyPressedKeys = [];
 var collidableMeshes = [];
 //boolean array-used to detemine if the object is interactable
@@ -7,56 +6,54 @@ var interactable = [];
 //velocity vector
 var speed = [0,0,0];
 
-var width = window.innerWidth;
-var height = window.innerHeight;
+var width= window.innerWidth;
+var height= window.innerHeight;
 
-var renderer = new THREE.WebGLRenderer({ antialias: true });
+
+var renderer= new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(width, height);
 document.body.appendChild(renderer.domElement);
  
 // create scene object
-var scene = new THREE.Scene;
+var scene= new THREE.Scene;
 
 // create simple geometry and add to scene
-var cubeGeometry = new THREE.CubeGeometry(1,1, 1);
-//var cubeMaterial = new THREE.MeshLambertMaterial({ map: THREE.ImageUtils.loadTexture('crate.jpg')});
-var cubeMaterial = new THREE.MeshLambertMaterial({ color: 0xff0000});
-var cube = new THREE.Mesh(cubeGeometry, cubeMaterial); // Sphere is a stand in for the player model
+var cubeGeometry= new THREE.CubeGeometry(1, 1, 1);
+var cubeMaterial= new THREE.MeshLambertMaterial({ color: 0xff0000});
+var cube= new THREE.Mesh(cubeGeometry, cubeMaterial);
 
-var sphereGeom = new THREE.SphereGeometry(.3, 50);
-var player = new THREE.Mesh(sphereGeom, cubeMaterial);
+var sphereGeom= new THREE.SphereGeometry(.3, 50);
+var player= new THREE.Mesh(sphereGeom, cubeMaterial);
+player.position.set(0, 1, 49);
 cube.position.set(2, 0, 1)
 collidableMeshes.push(cube);
 interactable.push(true);
 
-var geometry = new THREE.PlaneGeometry( 5, 5, 32 );
-var material = new THREE.MeshBasicMaterial( {color: 0xffffff, side: THREE.DoubleSide} );
-var plane = new THREE.Mesh( geometry, material );
-plane.rotation.x = Math.PI / 2;
+var geometry= new THREE.PlaneGeometry(100, 100, 32);
+var material= new THREE.MeshBasicMaterial( {color: 0xffffff, side: THREE.DoubleSide} );
+var plane= new THREE.Mesh(geometry, material);
+plane.rotation.x= Math.PI/2;
 
 // create perspective camera
-var camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 10000);
-camera.position.y = 5;
-camera.position.z = 1;
-camera.rotation.x = -Math.PI /2 + (1/4);
+var camera= new THREE.PerspectiveCamera(45, width / height, 0.1, 10000);
+camera.position.x= player.position.x;
+camera.position.y= 5;
+camera.position.z= player.position.z+1;
+camera.rotation.x= -Math.PI /2 + (1/4);
 
 // add to scene and renderer
 scene.add(camera); 
 renderer.render(scene, camera);
 
-// create the view matrix
-
-
 // add lighting and add to scene 
-var pointLight = new THREE.PointLight(0xaabbcc);
+var pointLight= new THREE.PointLight(0xaabbcc);
 pointLight.position.set(10, 16, 16);
 scene.add(pointLight);
 scene.add(player);
 scene.add(cube);
-scene.add(plane)
+scene.add(plane);
 
-window.onload = function init()
-{
+window.onload= function init(){
     window.addEventListener("keydown", function(event) {
 		currentlyPressedKeys[event.keyCode] = true;
     });
@@ -65,38 +62,26 @@ window.onload = function init()
 		currentlyPressedKeys[event.keyCode] = false;
     });
 
+	setupMaze();
     render();
 }
 
-/*
-var skyboxGeometry = new THREE.CubeGeometry(10000, 10000, 10000);
-var skyboxMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000, side: THREE.DoubleSide });
-var skybox = new THREE.Mesh(skyboxGeometry, skyboxMaterial);
-scene.add(skybox);
- */
- 
-renderer.render(scene, camera);
-
-function handle_input()
-{
+function handle_input(){
     speed = [0,0,0]
 
-    if(currentlyPressedKeys[65] == true) //A key
-    {
-       speed[0] = -.05
+    if(currentlyPressedKeys[65] == true){ //A key
+       speed[0]= -.05
     }
-    if(currentlyPressedKeys[68] == true) //D key
-    {
-        speed[0] = .05;
+    if(currentlyPressedKeys[68] == true){ //D key
+        speed[0]= .05;
     }
-    if(currentlyPressedKeys[87] == true) //W key
-    {
-        speed[2] = -.05
+    if(currentlyPressedKeys[87] == true){ //W key
+        speed[2]= -.05
     }
-    if(currentlyPressedKeys[83] == true) //S key
-    {
-        speed[2] = .05
+    if(currentlyPressedKeys[83] == true){ //S key
+        speed[2]= .05
     }
+
     if(currentlyPressedKeys[16] == true) //ShiftKey
     {
         for(var i = 0; i < speed.length; i++)
@@ -110,14 +95,14 @@ function handle_input()
     }
 
     //camera.lookAt(cube.position);
+
 }
 
-function detect_collisions()
-{
+function detect_collisions(){
     // Collision detection inspired by view-source:http://stemkoski.github.io/Three.js/Collision-Detection.html
     //and http://webmaestro.fr/collisions-detection-three-js-raycasting/
 
-    this.rays = [
+    this.rays= [
         new THREE.Vector3(0, 0, 1),
         new THREE.Vector3(1, 0, 1),
         new THREE.Vector3(1, 0, 0),
@@ -128,8 +113,8 @@ function detect_collisions()
         new THREE.Vector3(-1, 0, 1)
     ];
 
-    var originPoint = player.position.clone();
-    
+    var originPoint= player.position.clone();
+
     for (var i = 0; i < rays.length; i++)
 	{	
         
@@ -140,24 +125,20 @@ function detect_collisions()
 		if ( collisionResults.length > 0 && collisionResults[0].distance < maximumDist ) 
         {
             console.log("Hit");
-            if(directionVector.x > 0 && speed[0] > 0)
-            {
+            if(directionVector.x > 0 && speed[0] > 0){
                 speed[0] = 0;
             }
-            if(directionVector.x < 0 && speed[0] < 0)
-            {
+            if(directionVector.x < 0 && speed[0] < 0){
                 speed[0] = 0;
             }
-            if(directionVector.z < 0 && speed[2] < 0)
-            {
+            if(directionVector.z < 0 && speed[2] < 0){
                 speed[2] = 0;
             }
-            if(directionVector.z > 0 && speed[2] > 0)
-            {
+            if(directionVector.z > 0 && speed[2] > 0){
                 speed[2] = 0;
             }
-
         }
+
 
 	}	
 
@@ -169,8 +150,7 @@ function interact()
 }
 
 
-function update_position()
-{
+function update_position(){
     camera.position.x += speed[0];
     player.position.x += speed[0];
 
@@ -178,17 +158,20 @@ function update_position()
     player.position.z += speed[2];
 }
 
+function setupMaze(){
+	var wallGeometry= new THREE.CubeGeometry(0.5,5,5);
+	var wallMaterial= new THREE.MeshLambertMaterial({ color: 0x003399 });
+	var wall= new THREE.Mesh(wallGeometry, wallMaterial);
+	wall.position.set(2, 1, 47.5);
+	collidableMeshes.push(wall);
+	scene.add(wall);
+}
 
-
-
-function render() 
-{
-    
+function render(){
     handle_input();
-    detect_collisions()
+    detect_collisions();
     update_position();
     renderer.render(scene, camera);
     requestAnimationFrame(render);	
+    requestAnimationFrame(render);
 }
-
-
