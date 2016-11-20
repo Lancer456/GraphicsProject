@@ -1,51 +1,7 @@
 var currentlyPressedKeys= [];
 var collidableMeshes= [];
 var speed= [0,0,0];
-
-var width= window.innerWidth;
-var height= window.innerHeight;
-
-var renderer= new THREE.WebGLRenderer({ antialias: true });
-renderer.setSize(width, height);
-document.body.appendChild(renderer.domElement);
- 
-// create scene object
-var scene= new THREE.Scene;
-
-// create simple geometry and add to scene
-var cubeGeometry= new THREE.CubeGeometry(1, 1, 1);
-var cubeMaterial= new THREE.MeshLambertMaterial({ color: 0xff0000});
-var cube= new THREE.Mesh(cubeGeometry, cubeMaterial);
-
-var sphereGeom= new THREE.SphereGeometry(.3, 50);
-var player= new THREE.Mesh(sphereGeom, cubeMaterial);
-player.position.set(0, 1, 49);
-cube.position.set(2, 0, 1)
-collidableMeshes.push(cube);
-
-var geometry= new THREE.PlaneGeometry(100, 100, 32);
-var material= new THREE.MeshBasicMaterial( {color: 0xffffff, side: THREE.DoubleSide} );
-var plane= new THREE.Mesh(geometry, material);
-plane.rotation.x= Math.PI/2;
-
-// create perspective camera
-var camera= new THREE.PerspectiveCamera(45, width / height, 0.1, 10000);
-camera.position.x= player.position.x;
-camera.position.y= 5;
-camera.position.z= player.position.z+1;
-camera.rotation.x= -Math.PI /2 + (1/4);
-
-// add to scene and renderer
-scene.add(camera); 
-renderer.render(scene, camera);
-
-// add lighting and add to scene 
-var pointLight= new THREE.PointLight(0xaabbcc);
-pointLight.position.set(10, 16, 16);
-scene.add(pointLight);
-scene.add(player);
-scene.add(cube);
-scene.add(plane);
+var renderer, scene, cube, player, plane, pointLight, camera;
 
 window.onload= function init()
 {
@@ -58,6 +14,51 @@ window.onload= function init()
     {
 		currentlyPressedKeys[event.keyCode] = false;
     });
+	
+	var width= window.innerWidth;
+	var height= window.innerHeight;
+	
+	renderer= new THREE.WebGLRenderer({ antialias: true });
+	renderer.setSize(width, height);
+	document.body.appendChild(renderer.domElement);
+
+	// create scene object
+	scene= new THREE.Scene;
+
+	// create simple geometry and add to scene
+	var cubeGeometry= new THREE.CubeGeometry(1, 1, 1);
+	var cubeMaterial= new THREE.MeshLambertMaterial({ color: 0xff0000});
+	cube= new THREE.Mesh(cubeGeometry, cubeMaterial);
+
+	var sphereGeom= new THREE.SphereGeometry(.3, 50);
+	player= new THREE.Mesh(sphereGeom, cubeMaterial);
+	player.position.set(0, 1, 49);
+	cube.position.set(2, 0, 1)
+	collidableMeshes.push(cube);
+
+	var geometry= new THREE.PlaneGeometry(100, 100, 32);
+	var material= new THREE.MeshBasicMaterial( {color: 0xffffff, side: THREE.DoubleSide} );
+	plane= new THREE.Mesh(geometry, material);
+	plane.rotation.x= Math.PI/2;
+
+	// create perspective camera
+	camera= new THREE.PerspectiveCamera(45, width / height, 0.1, 10000);
+	camera.position.x= player.position.x;
+	camera.position.y= 5;
+	camera.position.z= player.position.z+1;
+	camera.rotation.x= -Math.PI /2 + (1/4);
+
+	// add to scene and renderer
+	scene.add(camera); 
+	renderer.render(scene, camera);
+
+	// add lighting and add to scene 
+	pointLight= new THREE.PointLight(0xaabbcc);
+	pointLight.position.set(10, 16, 16);
+	scene.add(pointLight);
+	scene.add(player);
+	scene.add(cube);
+	scene.add(plane);
 
 	setupMaze();
     render();
@@ -157,8 +158,5 @@ function render()
     detect_collisions();
     update_position();
     renderer.render(scene, camera);
-    requestAnimationFrame(render);	
     requestAnimationFrame(render);
 }
-
-
