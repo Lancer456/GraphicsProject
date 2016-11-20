@@ -1,130 +1,60 @@
-var collidableMeshes = [];
+
 var currentlyPressedKeys = [];
-var width = window.innerWidth;
-var height = window.innerHeight;
+ var speed = [0,0,0];
 
-var renderer = new THREE.WebGLRenderer({ antialias: true });
-renderer.setSize(width, height);
-document.body.appendChild(renderer.domElement);
- 
-// create scene object
-var scene = new THREE.Scene;
-
-// create simple geometry and add to scene
-var cubeGeometry = new THREE.CubeGeometry(1,1, 1);
-//var cubeMaterial = new THREE.MeshLambertMaterial({ map: THREE.ImageUtils.loadTexture('crate.jpg')});
-var cubeMaterial = new THREE.MeshLambertMaterial({ color: 0xff0000});
-var sphere = new THREE.Mesh(cubeGeometry, cubeMaterial); // Cube object is a stand in for the player model
-
-var sphereGeom = new THREE.SphereGeometry(.3, 50);
-var player = new THREE.Mesh(sphereGeom, cubeMaterial);
-sphere.position.set(2, 0, 1)
-collidableMeshes.push(sphere);
-
-var geometry = new THREE.PlaneGeometry( 5, 5, 32 );
-var material = new THREE.MeshBasicMaterial( {color: 0xffffff, side: THREE.DoubleSide} );
-var plane = new THREE.Mesh( geometry, material );
-plane.rotation.x = Math.PI / 2;
-
-// create perspective camera
-var camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 10000);
-camera.position.y = 5;
-camera.position.z = 1;
-camera.rotation.x = -Math.PI /2 + (1/4);
-
-// add to scene and renderer
-scene.add(camera); 
-renderer.render(scene, camera);
-
-// create the view matrix
-
-
-// add lighting and add to scene 
-var pointLight = new THREE.PointLight(0xaabbcc);
-pointLight.position.set(10, 16, 16);
-scene.add(pointLight);
-scene.add(player);
-scene.add(sphere);
-scene.add(plane)
-
-window.onload = function init()
-{
-    window.addEventListener("keydown", function(event) {
-		currentlyPressedKeys[event.keyCode] = true;
-    });
-    
-    window.addEventListener("keyup", function(event) {
-		currentlyPressedKeys[event.keyCode] = false;
-    });
-
-    render();
-}
-
-/*
-var skyboxGeometry = new THREE.CubeGeometry(10000, 10000, 10000);
-var skyboxMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000, side: THREE.DoubleSide });
-var skybox = new THREE.Mesh(skyboxGeometry, skyboxMaterial);
-scene.add(skybox);
-
- 
-renderer.render(scene, camera);
-
-function handle_input()
-{
-    var speed = 0.05
-    
-    /*
-    if((player.position.x == 0) || (player.position.z == 0) || (player.position.x == 5) || (player.position.z == 5))
-    {
-        speed = 0;
-    }
-    */
-    if(currentlyPressedKeys[65] == true) //A key
-    {
-       camera.position.x -= speed;
-       player.position.x -= speed;
-    }
-    if(currentlyPressedKeys[68] == true) //D key
-    {
-        camera.position.x += speed;
-        player.position.x += speed;
-    }
-    if(currentlyPressedKeys[87] == true) //W key
-    {
-        camera.position.z -= speed;
-        player.position.z -= speed;
-    }
-    if(currentlyPressedKeys[83] == true) //S key
-    {
-        camera.position.z += speed;
-        player.position.z += speed;
-    }
-
-    //camera.lookAt(cube.position);
-}
-
-function detect_collisions()
-{
-    //Collision detection pulled from view-source:http://stemkoski.github.io/Three.js/Collision-Detection.html
+        new THREE.Vector3(1, 0, 1),
+        new THREE.Vector3(1, 0, 0),
+        new THREE.Vector3(1, 0, -1),
+        new THREE.Vector3(0, 0, -1),
+        new THREE.Vector3(-1, 0, -1),
+        new THREE.Vector3(-1, 0, 0),
+        new THREE.Vector3(-1, 0, 1)
+    ];
 
     var originPoint = player.position.clone();
-    for (var vertexIndex = 0; vertexIndex < player.geometry.vertices.length; vertexIndex++)
+    
+    for (var i = 0; i < rays.length; i++)
 	{	
-		var localVertex = player.geometry.vertices[vertexIndex].clone();
-		var globalVertex = localVertex.applyMatrix4( player.matrix );
-		var directionVector = globalVertex.sub( player.position );
-		
-		var ray = new THREE.Raycaster( originPoint, directionVector.clone().normalize() );
+        
+		var directionVector = rays[i];
+        var ray = new THREE.Raycaster( originPoint, directionVector.clone().normalize() );
+		var maximumDist = .25;
 		var collisionResults = ray.intersectObjects( collidableMeshes );
-		if ( collisionResults.length > 0 && collisionResults[0].distance < directionVector.length() ) 
-			console.log("Hit")
+		if ( collisionResults.length > 0 && collisionResults[0].distance < maximumDist ) 
+        {
+            console.log("Hit");
+            if(directionVector.x > 0 && speed[0] > 0)
+            {
+                speed[0] = 0;
+            }
+            if(directionVector.x < 0 && speed[0] < 0)
+            {
+                speed[0] = 0;
+            }
+            if(directionVector.z < 0 && speed[2] < 0)
+            {
+                speed[2] = 0;
+            }
+            if(directionVector.z > 0 && speed[2] > 0)
+            {
+                speed[2] = 0;
+            }
+
+        }
+			
 
 	}	
 
 }
 
+function update_position()
+{
+    camera.position.x += speed[0];
+    player.position.x += speed[0];
 
-
+    camera.position.z += speed[2];
+    player.position.z += speed[2];
+}
 
 
 
@@ -134,6 +64,7 @@ function render()
     
     handle_input();
     detect_collisions()
+    update_position();
     renderer.render(scene, camera);
     requestAnimationFrame(render);	
 }
