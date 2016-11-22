@@ -1,35 +1,17 @@
-var currentlyPressedKeys = [];
-var collidableMeshes = [];
-var speed;
-//boolean array-used to detemine if the object is interactable
-var interactable = [];
-
-//velocity vector
-
-
-var width= window.innerWidth;
-var height= window.innerHeight;
-
-
-var renderer= new THREE.WebGLRenderer({ antialias: true });
-renderer.setSize(width, height);
-document.body.appendChild(renderer.domElement);
+var currentlyPressedKeys= [];
+var collidableMeshes= [];
+var interactable= []; //boolean array-used to detemine if the object is interactable
  
 // create scene object
-var scene= new THREE.Scene;
+var scene, player, cube, speed;
 
-var player, camera;
-
-window.onload= function init()
-{
-    window.addEventListener("keydown", function(event) 
-    {
-		currentlyPressedKeys[event.keyCode] = true;
+window.onload= function init(){
+    window.addEventListener("keydown", function(event){
+		currentlyPressedKeys[event.keyCode]= true;
     });
     
-    window.addEventListener("keyup", function(event) 
-    {
-		currentlyPressedKeys[event.keyCode] = false;
+    window.addEventListener("keyup", function(event){
+		currentlyPressedKeys[event.keyCode]= false;
     });
 	
 	var width= window.innerWidth;
@@ -42,19 +24,14 @@ window.onload= function init()
 	// create scene object
 	scene= new THREE.Scene;
 
-	// create simple geometry and add to scene
-	var cubeGeometry= new THREE.CubeGeometry(1, 1, 1);
-	var cubeMaterial= new THREE.MeshLambertMaterial({ color: 0xff0000});
-	cube= new THREE.Mesh(cubeGeometry, cubeMaterial);
+	var playerMaterial= new THREE.MeshLambertMaterial({ color: 0x890000});
 
 	var sphereGeom= new THREE.SphereGeometry(.3, 50);
-	player= new THREE.Mesh(sphereGeom, cubeMaterial);
+	player= new THREE.Mesh(sphereGeom, playerMaterial);
 	player.position.set(0, 1, 49);
-	cube.position.set(2, 0, 1)
-	collidableMeshes.push(cube);
 
 	var geometry= new THREE.PlaneGeometry(100, 100, 32);
-	var material= new THREE.MeshBasicMaterial( {color: 0xffffff, side: THREE.DoubleSide} );
+	var material= new THREE.MeshLambertMaterial( {color: 0x404040, side: THREE.DoubleSide} );
 	plane= new THREE.Mesh(geometry, material);
 	plane.rotation.x= Math.PI/2;
 
@@ -62,20 +39,27 @@ window.onload= function init()
 	camera= new THREE.PerspectiveCamera(45, width / height, 0.1, 10000);
 	camera.position.x= player.position.x;
 	camera.position.y= 5;
-	camera.position.z= player.position.z+1;
-	camera.rotation.x= -Math.PI /2 + (1/4);
+	camera.position.z= player.position.z+2;
+	camera.rotation.x= -Math.PI /2 + .5;
 
 	// add to scene and renderer
 	scene.add(camera); 
 	renderer.render(scene, camera);
 
 	// add lighting and add to scene 
+
 	pointLight= new THREE.PointLight(0xaabbcc);
-	pointLight.position.set(10, 16, 16);
+	pointLight.position.x = player.position.x;
+    pointLight.y = 2;
+    pointLight.z = player.position.z+20;
+
+    var ambientLight = new THREE.AmbientLight( 0x464646)
+
 	scene.add(pointLight);
 	scene.add(player);
 	scene.add(cube);
 	scene.add(plane);
+    scene.add(ambientLight);
 
 	setupMaze();
 
