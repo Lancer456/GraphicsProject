@@ -1,7 +1,57 @@
-var currentlyPressedKeys= [];
-var collidableMeshes= [];
-var speed= [0,0,0];
-var renderer, scene, cube, player, plane, pointLight, camera;
+var currentlyPressedKeys = [];
+var collidableMeshes = [];
+//boolean array-used to detemine if the object is interactable
+var interactable = [];
+
+//velocity vector
+var speed = [0,0,0];
+
+var width= window.innerWidth;
+var height= window.innerHeight;
+
+
+var renderer= new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(width, height);
+document.body.appendChild(renderer.domElement);
+ 
+// create scene object
+var scene= new THREE.Scene;
+
+// create simple geometry and add to scene
+var cubeGeometry= new THREE.CubeGeometry(1, 1, 1);
+var cubeMaterial= new THREE.MeshLambertMaterial({ color: 0xff0000});
+var cube= new THREE.Mesh(cubeGeometry, cubeMaterial);
+
+var sphereGeom= new THREE.SphereGeometry(.3, 50);
+var player= new THREE.Mesh(sphereGeom, cubeMaterial);
+player.position.set(0, 1, 49);
+cube.position.set(2, 0, 1)
+collidableMeshes.push(cube);
+interactable.push(true);
+
+var geometry= new THREE.PlaneGeometry(100, 100, 32);
+var material= new THREE.MeshBasicMaterial( {color: 0xffffff, side: THREE.DoubleSide} );
+var plane= new THREE.Mesh(geometry, material);
+plane.rotation.x= Math.PI/2;
+
+// create perspective camera
+var camera= new THREE.PerspectiveCamera(45, width / height, 0.1, 10000);
+camera.position.x= player.position.x;
+camera.position.y= 5;
+camera.position.z= player.position.z+1;
+camera.rotation.x= -Math.PI /2 + (1/4);
+
+// add to scene and renderer
+scene.add(camera); 
+renderer.render(scene, camera);
+
+// add lighting and add to scene 
+var pointLight= new THREE.PointLight(0xaabbcc);
+pointLight.position.set(10, 16, 16);
+scene.add(pointLight);
+scene.add(player);
+scene.add(cube);
+scene.add(plane);
 
 window.onload= function init()
 {
@@ -84,6 +134,21 @@ function handle_input()
     { 
         speed[2]= .05
     }
+
+    if(currentlyPressedKeys[16] == true) //ShiftKey
+    {
+        for(var i = 0; i < speed.length; i++)
+        {
+            speed[i] = speed[i] * 1.5;
+        }
+    }
+    if(currentlyPressedKeys[69] == true) //E key
+    {
+        //
+    }
+
+    //camera.lookAt(cube.position);
+
 }
 
 function detect_collisions()
@@ -108,7 +173,7 @@ function detect_collisions()
     {
 		var directionVector= rays[i];
         var ray= new THREE.Raycaster(originPoint, directionVector.clone().normalize());
-		var maximumDist= .25;
+		var maximumDist= .3;
 		var collisionResults= ray.intersectObjects(collidableMeshes);
 		if (collisionResults.length > 0 && collisionResults[0].distance < maximumDist)
         {
@@ -130,11 +195,19 @@ function detect_collisions()
                 speed[2] = 0;
             }
         }
-	}
+
+
+	}	
+
 }
 
-function update_position()
+function interact()
 {
+
+}
+
+
+function update_position(){
     camera.position.x += speed[0];
     player.position.x += speed[0];
 
