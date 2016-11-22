@@ -1,10 +1,11 @@
 var currentlyPressedKeys = [];
 var collidableMeshes = [];
+var speed;
 //boolean array-used to detemine if the object is interactable
 var interactable = [];
 
 //velocity vector
-var speed = [0,0,0];
+
 
 var width= window.innerWidth;
 var height= window.innerHeight;
@@ -17,41 +18,7 @@ document.body.appendChild(renderer.domElement);
 // create scene object
 var scene= new THREE.Scene;
 
-// create simple geometry and add to scene
-var cubeGeometry= new THREE.CubeGeometry(1, 1, 1);
-var cubeMaterial= new THREE.MeshLambertMaterial({ color: 0xff0000});
-var cube= new THREE.Mesh(cubeGeometry, cubeMaterial);
-
-var sphereGeom= new THREE.SphereGeometry(.3, 50);
-var player= new THREE.Mesh(sphereGeom, cubeMaterial);
-player.position.set(0, 1, 49);
-cube.position.set(2, 0, 1)
-collidableMeshes.push(cube);
-interactable.push(true);
-
-var geometry= new THREE.PlaneGeometry(100, 100, 32);
-var material= new THREE.MeshBasicMaterial( {color: 0xffffff, side: THREE.DoubleSide} );
-var plane= new THREE.Mesh(geometry, material);
-plane.rotation.x= Math.PI/2;
-
-// create perspective camera
-var camera= new THREE.PerspectiveCamera(45, width / height, 0.1, 10000);
-camera.position.x= player.position.x;
-camera.position.y= 5;
-camera.position.z= player.position.z+1;
-camera.rotation.x= -Math.PI /2 + (1/4);
-
-// add to scene and renderer
-scene.add(camera); 
-renderer.render(scene, camera);
-
-// add lighting and add to scene 
-var pointLight= new THREE.PointLight(0xaabbcc);
-pointLight.position.set(10, 16, 16);
-scene.add(pointLight);
-scene.add(player);
-scene.add(cube);
-scene.add(plane);
+var player, camera;
 
 window.onload= function init()
 {
@@ -111,6 +78,8 @@ window.onload= function init()
 	scene.add(plane);
 
 	setupMaze();
+
+    renderer.render(scene, camera);
     render();
 }
     
