@@ -80,11 +80,10 @@ window.onload= function init(){
 	var sphereGeom= new THREE.SphereGeometry(.3, 50);
 	player= new THREE.Mesh(sphereGeom, cubeMaterial);
 	player.position.set(0, 1, 49);
-	cube.position.set(2, 0, 1)
-	collidableMeshes.push(cube);
+	interactable.push(true);
 
 	var geometry= new THREE.PlaneGeometry(100, 100, 32);
-	var material= new THREE.MeshBasicMaterial( {color: 0xffffff, side: THREE.DoubleSide} );
+	var material= new THREE.MeshLambertMaterial( {color: 0xffffff, side: THREE.DoubleSide} );
 	plane= new THREE.Mesh(geometry, material);
 	plane.rotation.x= Math.PI/2;
 
@@ -102,9 +101,9 @@ window.onload= function init(){
 	// add lighting and add to scene 
 	pointLight= new THREE.PointLight(0xaabbcc);
 	pointLight.position.set(10, 16, 16);
+	
 	scene.add(pointLight);
 	scene.add(player);
-	scene.add(cube);
 	scene.add(plane);
 
 	setupMaze();
@@ -115,16 +114,16 @@ function handle_input(){
     speed = [0,0,0]
 
     if(currentlyPressedKeys[65] == true){ //A key
-       speed[0]= -.05
+       speed[0]= -.05;
     }
     if(currentlyPressedKeys[68] == true){ //D key
         speed[0]= .05;
     }
     if(currentlyPressedKeys[87] == true){ //W key
-        speed[2]= -.05
+        speed[2]= -.05;
     }
     if(currentlyPressedKeys[83] == true){ //S key
-        speed[2]= .05
+        speed[2]= .05;
     }
 
     if(currentlyPressedKeys[16] == true) //ShiftKey
@@ -134,13 +133,14 @@ function handle_input(){
             speed[i] = speed[i] * 1.5;
         }
     }
-    if(currentlyPressedKeys[69] == true) //E key
+    if(currentlyPressedKeys[81] == true) //Q key
     {
-        //
+		camera.position.y -= 1;
     }
-
-    //camera.lookAt(cube.position);
-
+	if(currentlyPressedKeys[69] == true) //E key
+    {
+		camera.position.y += 1;
+    }
 }
 
 function detect_collisions(){
@@ -183,17 +183,13 @@ function detect_collisions(){
                 speed[2] = 0;
             }
         }
-
-
-	}	
-
+	}
 }
 
 function interact()
 {
 
 }
-
 
 function update_position(){
     camera.position.x += speed[0];
@@ -204,12 +200,110 @@ function update_position(){
 }
 
 function setupMaze(){
-	var wallGeometry= new THREE.CubeGeometry(0.5,5,5);
+	outerWalls();
+	
+	var x_pos= [
+		-25, -15, -5, 20, 35, 
+		-40, -30, -20, -10, 0, 15, 30, 35, 45, 
+		-45, -35, -5, 0, 10, 25, 35, 40,
+		-45, -35, -30, -15, -5, 0, 5, 25, 30, 35, 45,
+		-45, -40, -20, -10, 0, 5, 15, 25, 45,
+		-45, -25, 5, 10, 20, 35, 45,
+		-45, -40, -35, -20, -15, 0, 5, 10, 20, 30, 45,
+		-40, -35, -25, -20, -10, 0, 5, 10, 15, 30, 40, 45,
+		-45, -40, -30, -25, -15, -5, 0, 10, 15, 20, 30, 35, 45,
+		-45, -40, -15, -10, -5, 0, 10, 15, 25, 30,
+		-45, -40, -15, -10, 5, 20, 35, 45,
+		-40, -20, 0, 5, 15, 20, 25, 35, 40,
+		-45, -30, -20, -5, 15, 20, 25, 30,
+		-40, -30, -25, -10, 0, 15, 25, 35, 45,
+		-25, -20, -15, -10, 0, 5, 30, 40,
+		-45, -25, -20, -10, 0, 10, 20, 25, 35, 40, 45,
+		-45, -30, -25, -20, -10, -5, 5, 10, 15, 25, 35, 45,
+		-35, -30, -10, 0, 10, 35,
+		-35, -30, -10, 0, 5, 15, 35, 45,
+		-35, -15, -5, 0, 10, 20, 30, 45];
+	var z_pos= [
+		47.5, 47.5, 47.5, 47.5, 47.5, 
+		42.5, 42.5, 42.5, 42.5, 42.5, 42.5, 42.5, 42.5, 42.5, 
+		37.5, 37.5, 37.5, 37.5, 37.5, 37.5, 37.5, 37.5,
+		32.5, 32.5, 32.5, 32.5, 32.5, 32.5, 32.5, 32.5, 32.5, 32.5, 32.5,
+		27.5, 27.5, 27.5, 27.5, 27.5, 27.5, 27.5, 27.5, 27.5,
+		22.5, 22.5, 22.5, 22.5, 22.5, 22.5, 22.5,
+		17.5, 17.5, 17.5, 17.5, 17.5, 17.5, 17.5, 17.5, 17.5, 17.5, 17.5,
+		12.5, 12.5, 12.5, 12.5, 12.5, 12.5, 12.5, 12.5, 12.5, 12.5, 12.5, 12.5,
+		7.5, 7.5, 7.5, 7.5, 7.5, 7.5, 7.5, 7.5, 7.5, 7.5, 7.5, 7.5, 7.5,
+		2.5, 2.5, 2.5, 2.5, 2.5, 2.5, 2.5, 2.5, 2.5, 2.5,
+		-2.5, -2.5, -2.5, -2.5, -2.5, -2.5, -2.5, -2.5,
+		-7.5, -7.5, -7.5, -7.5, -7.5, -7.5, -7.5, -7.5, -7.5,
+		-12.5, -12.5, -12.5, -12.5, -12.5, -12.5, -12.5, -12.5,
+		-17.5, -17.5, -17.5, -17.5, -17.5, -17.5, -17.5, -17.5, -17.5,
+		-22.5, -22.5, -22.5, -22.5, -22.5, -22.5, -22.5, -22.5,
+		-27.5, -27.5, -27.5, -27.5, -27.5, -27.5, -27.5, -27.5, -27.5, -27.5, -27.5,
+		-32.5, -32.5, -32.5, -32.5, -32.5, -32.5, -32.5, -32.5, -32.5, -32.5, -32.5, -32.5,
+		-37.5, -37.5, -37.5, -37.5, -37.5, -37.5
+		-42.5, -42.5, -42.5, -42.5, -42.5, -42.5, -42.5, -42.5
+		-47.5, -47.5, -47.5, -47.5, -47.5, -47.5, -47.5, -47.5];
+	var rotation= [
+		0, 0, 0, 0, 0, 
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 
+		0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0];
+	
 	var wallMaterial= new THREE.MeshLambertMaterial({ color: 0x003399 });
-	var wall= new THREE.Mesh(wallGeometry, wallMaterial);
-	wall.position.set(2, 1, 47.5);
-	collidableMeshes.push(wall);
-	scene.add(wall);
+	var wallGeometry= new THREE.CubeGeometry(0.5,5,5);
+	
+	for(var i=0; i<x_pos.length; i++){
+		var wall= new THREE.Mesh(wallGeometry, wallMaterial);
+		
+		wall.position.set(x_pos[i], 2.5, z_pos[i]);
+		wall.rotation.y= rotation[i];
+		collidableMeshes.push(wall);
+		scene.add(wall);
+	}
+}
+
+function outerWalls(){
+	var wallMaterial= new THREE.MeshLambertMaterial({ color: 0x003399 });
+	var wallGeometry= new THREE.CubeGeometry(0.5,2,100.5);
+	
+	var bottomWall= new THREE.Mesh(wallGeometry, wallMaterial);
+	bottomWall.position.set(0,1,50);
+	bottomWall.rotation.y= Math.PI/2;
+	collidableMeshes.push(bottomWall);
+	scene.add(bottomWall);
+	
+	var leftWall= new THREE.Mesh(wallGeometry, wallMaterial);
+	leftWall.position.set(-50,1,0);
+	collidableMeshes.push(leftWall);
+	scene.add(leftWall);
+	
+	var topWall= new THREE.Mesh(wallGeometry, wallMaterial);
+	topWall.position.set(0,1,-50);
+	topWall.rotation.y= Math.PI/2;
+	collidableMeshes.push(topWall);
+	scene.add(topWall);
+	
+	var rightWall= new THREE.Mesh(wallGeometry, wallMaterial);
+	rightWall.position.set(50,1,0);
+	collidableMeshes.push(rightWall);
+	scene.add(rightWall);
 }
 
 function render(){
