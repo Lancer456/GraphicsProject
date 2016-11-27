@@ -48,12 +48,14 @@ window.onload= function init(){
 
 	// add lighting and add to scene 
 
-	pointLight= new THREE.PointLight(0xaabbcc);
+	pointLight= new THREE.PointLight(0xffffff, 1, 6);
 	pointLight.position.x = player.position.x;
-    pointLight.y = 2;
-    pointLight.z = player.position.z+20;
+    pointLight.position.y = 5;
+    pointLight.position.z = player.position.z+1;
 
     var ambientLight = new THREE.AmbientLight( 0x464646)
+
+    player.add(pointLight)
 
 	scene.add(pointLight);
 	scene.add(player);
