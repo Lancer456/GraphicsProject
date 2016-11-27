@@ -1,7 +1,33 @@
 var currentlyPressedKeys= [];
-var collidableMeshes= [];
-var interactable= []; //boolean array-used to detemine if the object is interactable
- 
+var collidableMeshes = [];
+var interactable = []; //boolean array-used to detemine if the object is interactable
+var obstacles = [];
+var level = 1; 
+
+
+//7.65, 1, -3, 
+var obsx = [
+    7.65, 0
+    ];
+var obsz = [
+    -3, 0
+    ];
+//directions the obstacles move
+var obs_direction = [
+    'z', 'x'
+    ];
+var obs_velocity = [
+    1, 1
+    ];
+
+var obs_range = [
+    3, 3
+    ];
+var obs_speed = .3;
+
+    
+
+var lognum = 0;
 // create scene object
 var scene, player, cube, speed;
 
@@ -27,9 +53,7 @@ window.onload= function init(){
 	var playerMaterial= new THREE.MeshLambertMaterial({ color: 0x890000});
 
 	var sphereGeom= new THREE.SphereGeometry(.5, 50);
-	
-    
-    
+
     // player = new THREE.Mesh(sphereGeom, playerMaterial);
     player = new THREE.Object3D();
 
@@ -61,10 +85,10 @@ window.onload= function init(){
 
     } );
 
-
-
 	player.position.set(-2.5, 1, 48);
+
 	interactable.push(true);
+   
 
 	var geometry= new THREE.PlaneGeometry(100, 100, 32);
 	var material= new THREE.MeshLambertMaterial( {color: 0x404040, side: THREE.DoubleSide} );
@@ -95,11 +119,34 @@ window.onload= function init(){
 	scene.add(player);
 	scene.add(plane);
     scene.add(ambientLight);
+    add_obstacle();
+
+
 
 	setupMaze();
 
     renderer.render(scene, camera);
     render();
+}
+
+function add_obstacle()
+{
+     
+    //creates an obstacle
+    var obstacleMaterial = new THREE.MeshLambertMaterial({color: 0x890000});
+    var obstacleGeom = new THREE.SphereGeometry(.75, 50);
+    obstacles.push(new THREE.Mesh(obstacleGeom, obstacleMaterial));
+    obstacles[level - 1].position.set(obsx[level - 1], 1, obsz[level - 1]);
+
+    scene.add(obstacles[level - 1]);
+}
+//resets the position
+function reset()
+{
+	player.position.set(-2.5, 1, 48);
+    camera.position.x= player.position.x;
+	camera.position.y= 7;
+	camera.position.z= player.position.z+2.5;
 }
     
 function handle_input()
@@ -108,22 +155,23 @@ function handle_input()
 
     if(currentlyPressedKeys[65] == true)
     { //A key
-       speed[0]= -.05
+\
+       speed[0]= -.205;
        player.rotation.y = 3 * (Math.PI/2);
     }
     if(currentlyPressedKeys[68] == true)
     { //D key
-        speed[0]= .05;
+        speed[0]= .205;
         player.rotation.y = Math.PI/2;
     }
     if(currentlyPressedKeys[87] == true) //W key
     { 
-        speed[2]= -.05
+        speed[2]= -.205;
         player.rotation.y = Math.PI;
     }
     if(currentlyPressedKeys[83] == true) //S key
     { 
-        speed[2]= .05
+        speed[2]= .205;
         player.rotation.y = 0;
     }
 
@@ -146,11 +194,33 @@ function handle_input()
     }
 }
 
+function detect_end()
+{
+    //I'm sorry
+    var endx, endz, playx, playz, r1, r2;
+    endx = -2.5;
+    endz = -47.5;
+    playx = player.position.x;
+    playz = player.position.z;
+    r1 = .5
+    r2 = Math.sqrt((endx - playx) *(endx - playx) +  (endz - playz) * (endz - playz));
+    if(r2 < r1)
+    {
+        level++;
+        alert("PUT SOMETHING HERE");
+        reset();
+        //add_obstacle();
+    }
+}
+
+
+
 function detect_collisions()
 {
     // Collision detection inspired by view-source:http://stemkoski.github.io/Three.js/Collision-Detection.html
     //and http://webmaestro.fr/collisions-detection-three-js-raycasting/
 
+    detect_end();
     this.rays= [
         new THREE.Vector3(0, 0, 1),
         new THREE.Vector3(1, 0, 1),
@@ -193,18 +263,43 @@ function detect_collisions()
 	}
 }
 
-function interact()
-{
-
-}
-
 function update_position()
 {
+    lognum++;
     camera.position.x += speed[0];
     player.position.x += speed[0];
 
     camera.position.z += speed[2];
     player.position.z += speed[2];
+
+    for(var i = 0; i < obstacles.length; i++)
+    {
+        if(obs_direction[i] == 'x')
+        {   
+            if(Math.abs(obstacles[i].position.x - obsx[i]) >= obs_range[i])
+            {
+                obs_velocity[i] = obs_velocity[i] * -1;
+            }
+            obstacles[i].position.x += obs_speed * obs_velocity[i];
+        }
+        else if(obs_direction[i] == 'z')
+        {
+            if(Math.abs(obstacles[i].position.z - obsz[i]) >= obs_range[i])
+            {
+                obs_velocity[i] = obs_velocity[i] * -1;
+            }
+            obstacles[i].position.z += obs_speed * obs_velocity[i];
+        }
+    }
+
+
+    if(lognum == 30)
+    {
+        console.log("x:" + player.position.x + " z: " + player.position.z);
+        lognum = 0;
+    }
+    
+
 }
 
 function render()
