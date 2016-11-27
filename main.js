@@ -26,9 +26,10 @@ window.onload= function init(){
 
 	var playerMaterial= new THREE.MeshLambertMaterial({ color: 0x890000});
 
-	var sphereGeom= new THREE.SphereGeometry(.3, 50);
+	var sphereGeom= new THREE.SphereGeometry(.5, 50);
 	player= new THREE.Mesh(sphereGeom, playerMaterial);
-	player.position.set(0, 1, 49);
+	player.position.set(-2.5, 1, 48);
+	interactable.push(true);
 
 	var geometry= new THREE.PlaneGeometry(100, 100, 32);
 	var material= new THREE.MeshLambertMaterial( {color: 0x404040, side: THREE.DoubleSide} );
@@ -38,9 +39,9 @@ window.onload= function init(){
 	// create perspective camera
 	camera= new THREE.PerspectiveCamera(45, width / height, 0.1, 10000);
 	camera.position.x= player.position.x;
-	camera.position.y= 5;
-	camera.position.z= player.position.z+2;
-	camera.rotation.x= -Math.PI /2 + .5;
+	camera.position.y= 7;
+	camera.position.z= player.position.z+2.5;
+	camera.rotation.x= -Math.PI/2 + .5;
 
 	// add to scene and renderer
 	scene.add(camera); 
@@ -53,13 +54,12 @@ window.onload= function init(){
     pointLight.position.y = 5;
     pointLight.position.z = player.position.z+1;
 
-    var ambientLight = new THREE.AmbientLight( 0x464646)
+    var ambientLight= new THREE.AmbientLight(0x464646);
 
     player.add(pointLight)
 
 	scene.add(pointLight);
 	scene.add(player);
-	scene.add(cube);
 	scene.add(plane);
     scene.add(ambientLight);
 
@@ -97,13 +97,16 @@ function handle_input()
             speed[i] = speed[i] * 1.5;
         }
     }
-    if(currentlyPressedKeys[69] == true) //E key
+    if(currentlyPressedKeys[81] == true) //Q key
     {
-        //
+		camera.position.y -= 1;
+		camera.position.z -= .25;
     }
-
-    //camera.lookAt(cube.position);
-
+	if(currentlyPressedKeys[69] == true) //E key
+    {
+		camera.position.y += 1;
+		camera.position.z += .25;
+    }
 }
 
 function detect_collisions()
@@ -128,7 +131,7 @@ function detect_collisions()
     {
 		var directionVector= rays[i];
         var ray= new THREE.Raycaster(originPoint, directionVector.clone().normalize());
-		var maximumDist= .3;
+		var maximumDist= .5;
 		var collisionResults= ray.intersectObjects(collidableMeshes);
 		if (collisionResults.length > 0 && collisionResults[0].distance < maximumDist)
         {
@@ -150,10 +153,7 @@ function detect_collisions()
                 speed[2] = 0;
             }
         }
-
-
-	}	
-
+	}
 }
 
 function interact()
@@ -161,23 +161,13 @@ function interact()
 
 }
 
-
-function update_position(){
+function update_position()
+{
     camera.position.x += speed[0];
     player.position.x += speed[0];
 
     camera.position.z += speed[2];
     player.position.z += speed[2];
-}
-
-function setupMaze()
-{
-	var wallGeometry= new THREE.CubeGeometry(0.5,5,5);
-	var wallMaterial= new THREE.MeshLambertMaterial({ color: 0x003399 });
-	var wall= new THREE.Mesh(wallGeometry, wallMaterial);
-	wall.position.set(2, 1, 47.5);
-	collidableMeshes.push(wall);
-	scene.add(wall);
 }
 
 function render()
