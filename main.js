@@ -38,10 +38,10 @@ window.onload= function init(){
 
 	// create perspective camera
 	camera= new THREE.PerspectiveCamera(45, width / height, 0.1, 10000);
-	camera.position.x= player.position.x;
-	camera.position.y= 7;
-	camera.position.z= player.position.z+2.5;
-	camera.rotation.x= -Math.PI/2 + .5;
+	camera.position.x= 0;//player.position.x;
+	camera.position.y= 120;
+	camera.position.z= 0;//player.position.z+2.5;
+	camera.rotation.x= -Math.PI/2;
 
 	// add to scene and renderer
 	scene.add(camera); 
@@ -98,12 +98,12 @@ function handle_input()
     if(currentlyPressedKeys[81] == true) //Q key
     {
 		camera.position.y -= 1;
-		camera.position.z -= .25;
+		// camera.position.z -= .25;
     }
 	if(currentlyPressedKeys[69] == true) //E key
     {
 		camera.position.y += 1;
-		camera.position.z += .25;
+		// camera.position.z += .25;
     }
 }
 
