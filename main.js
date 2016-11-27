@@ -27,7 +27,42 @@ window.onload= function init(){
 	var playerMaterial= new THREE.MeshLambertMaterial({ color: 0x890000});
 
 	var sphereGeom= new THREE.SphereGeometry(.5, 50);
-	player= new THREE.Mesh(sphereGeom, playerMaterial);
+	
+    
+    
+    // player = new THREE.Mesh(sphereGeom, playerMaterial);
+    player = new THREE.Object3D();
+
+    // Texture
+
+    var texture = new THREE.Texture();
+    var loader = new THREE.ImageLoader( );
+    loader.load( './Components/Character Texture Lightened.jpg', function ( image ) {
+        texture.image = image;
+        texture.needsUpdate = true;
+    } );
+
+    // model
+
+    var loader = new THREE.OBJLoader( );
+    loader.load( './Components/sam_textured.obj', function ( object ) {
+        object.scale.set(0.01, 0.01, 0.01);
+        //var material = new THREE.MeshLambertMaterial({color:0xaaff00});
+        object.traverse( function ( child ) {
+            if ( child instanceof THREE.Mesh ) {
+                child.material.map = texture;
+            }
+        } );	
+        object.position.set(-2.5, 2, 48);
+        object.rotation.y = Math.PI;
+        
+        player = object;
+        scene.add(object);
+
+    } );
+
+
+
 	player.position.set(-2.5, 1, 48);
 	interactable.push(true);
 
@@ -49,14 +84,12 @@ window.onload= function init(){
 
 	// add lighting and add to scene 
 
-	pointLight= new THREE.PointLight(0xffffff, 1, 6);
-	pointLight.position.x = player.position.x;
-    pointLight.position.y = 5;
-    pointLight.position.z = player.position.z+1;
+	pointLight= new THREE.PointLight(0xaabbcc);
+	pointLight.position.x= player.position.x;
+    pointLight.y= 2;
+    pointLight.z= player.position.z+20;
 
     var ambientLight= new THREE.AmbientLight(0x464646);
-
-    player.add(pointLight)
 
 	scene.add(pointLight);
 	scene.add(player);
@@ -76,18 +109,22 @@ function handle_input()
     if(currentlyPressedKeys[65] == true)
     { //A key
        speed[0]= -.05
+       player.rotation.y = 3 * (Math.PI/2);
     }
     if(currentlyPressedKeys[68] == true)
     { //D key
         speed[0]= .05;
+        player.rotation.y = Math.PI/2;
     }
     if(currentlyPressedKeys[87] == true) //W key
     { 
         speed[2]= -.05
+        player.rotation.y = Math.PI;
     }
     if(currentlyPressedKeys[83] == true) //S key
     { 
         speed[2]= .05
+        player.rotation.y = 0;
     }
 
     if(currentlyPressedKeys[16] == true) //ShiftKey
