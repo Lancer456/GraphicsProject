@@ -28,7 +28,8 @@ window.onload= function init(){
 
 	var sphereGeom= new THREE.SphereGeometry(.5, 50);
 	player= new THREE.Mesh(sphereGeom, playerMaterial);
-	player.position.set(-2.5, 1, 48);
+    player.position.set(-2.5, 1, 48);
+    //reset();
 	interactable.push(true);
 
 	var geometry= new THREE.PlaneGeometry(100, 100, 32);
@@ -66,6 +67,15 @@ window.onload= function init(){
     renderer.render(scene, camera);
     render();
 }
+
+//resets the position
+function reset()
+{
+	player.position.set(-2.5, 1, 48);
+    camera.position.x= player.position.x;
+	camera.position.y= 7;
+	camera.position.z= player.position.z+2.5;
+}
     
 function handle_input()
 {
@@ -73,19 +83,19 @@ function handle_input()
 
     if(currentlyPressedKeys[65] == true)
     { //A key
-       speed[0]= -.05
+       speed[0]= -.205;
     }
     if(currentlyPressedKeys[68] == true)
     { //D key
-        speed[0]= .05;
+        speed[0]= .205;
     }
     if(currentlyPressedKeys[87] == true) //W key
     { 
-        speed[2]= -.05
+        speed[2]= -.205;
     }
     if(currentlyPressedKeys[83] == true) //S key
     { 
-        speed[2]= .05
+        speed[2]= .205;
     }
 
     if(currentlyPressedKeys[16] == true) //ShiftKey
@@ -106,12 +116,31 @@ function handle_input()
 		camera.position.z += .25;
     }
 }
+function detect_end()
+{
+    //I'm sorry
+    var endx, endz, playx, playz, r1, r2;
+    endx = -2.5;
+    endz = -47.5;
+    playx = player.position.x;
+    playz = player.position.z;
+    r1 = .5
+    r2 = Math.sqrt((endx - playx) *(endx - playx) +  (endz - playz) * (endz - playz));
+    if(r2 < r1)
+    {
+        alert("PUT SOMETHING HERE");
+        reset();
+    }
+}
+
+
 
 function detect_collisions()
 {
     // Collision detection inspired by view-source:http://stemkoski.github.io/Three.js/Collision-Detection.html
     //and http://webmaestro.fr/collisions-detection-three-js-raycasting/
 
+    detect_end();
     this.rays= [
         new THREE.Vector3(0, 0, 1),
         new THREE.Vector3(1, 0, 1),
