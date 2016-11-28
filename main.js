@@ -1,34 +1,20 @@
-var scene, player, cube, speed;
+var scene, player, cube, speed, score, level = 1;
 var currentlyPressedKeys= [];
 var collidableMeshes = [];
+var obstacles = [], treasures = [];
 // var interactable = [];  // Removed because it wasn't being used
-
-var level = 1; // I'm not sure how well a leveling system would work - Wesley
 
 var lognum = 0;
 // create scene object
 //7.65, 1, -3, 
 
-var obstacles = [];
-
-var obsx = [
-    7.65, 0
-    ];
-var obsz = [
-    -3, 0
-    ];
+var obsx;
+var obsz;
 //directions the obstacles move
-var obs_direction = [
-    'z', 'x'
-    ];
-var obs_velocity = [
-    1, 1
-    ];
-
-var obs_range = [
-    3, 3
-    ];
-var obs_speed = .3;
+var obs_direction;
+var obs_velocity;
+var obs_range;
+var obs_speed;
 
 window.onload= function init(){
     window.addEventListener("keydown", function(event){
@@ -49,46 +35,16 @@ window.onload= function init(){
 	// create scene object
 	scene= new THREE.Scene;
 
-    // player = new THREE.Mesh(sphereGeom, playerMaterial);
-    player = new THREE.Object3D();
-
-    // Texture
-
-    var texture = new THREE.Texture();
-    var loader = new THREE.ImageLoader( );
-    loader.load( './Components/Character Texture Lightened.jpg', function ( image ) {
-        texture.image = image;
-        texture.needsUpdate = true;
-    } );
-
-    // model
-
-    var loader = new THREE.OBJLoader( );
-    loader.load( './Components/sam_textured.obj', function ( object ) {
-        object.scale.set(0.01, 0.01, 0.01);
-        //var material = new THREE.MeshLambertMaterial({color:0xaaff00});
-        object.traverse( function ( child ) {
-            if ( child instanceof THREE.Mesh ) {
-                child.material.map = texture;
-            }
-        } );	
-        object.position.set(-2.5, 2, 48);
-        object.rotation.y = Math.PI;
-        
-        player = object;
-        scene.add(object);
-
-    } );
-
+    // ---- Player Creation -----
+    create_player()
 	player.position.set(-2.5, 1, 48);
-
     scene.add(player);
 
-   
+    create_obstacles();
 
 	var geometry= new THREE.PlaneGeometry(100, 100, 32);
 	// var material= new THREE.MeshLambertMaterial({ color: 0x404040, side: THREE.DoubleSide });
-	var floorTexture= new THREE.ImageUtils.loadTexture('stone_floor.jpg');
+	var floorTexture= new THREE.ImageUtils.loadTexture('./Components/stone_floor.jpg');
 	floorTexture.wrapS= floorTexture.wrapT= THREE.RepeatWrapping;
 	floorTexture.repeat.set(20, 20);
 	
@@ -130,6 +86,65 @@ window.onload= function init(){
 
     renderer.render(scene, camera);
     render();
+}
+
+function create_obstacles()
+{
+    obsx = [
+    7.65, 0
+    ];
+
+    obsz = [
+    -3, 0
+    ];
+
+//directions the obstacles move
+    obs_direction = [
+    'z', 'x'
+    ];
+
+    obs_velocity = [
+    1, 1
+    ];
+
+    obs_range = [
+    3, 3
+    ];
+
+    obs_speed = .3;
+
+}
+function create_player()
+{
+    player = new THREE.Object3D();
+
+    // Loads in Texture
+
+    var texture = new THREE.Texture();
+    var loader = new THREE.ImageLoader( );
+    loader.load( './Components/Character Texture Lightened.jpg', function ( image ) {
+        texture.image = image;
+        texture.needsUpdate = true;
+    } );
+
+    // Loads in the player Model
+    var loader = new THREE.OBJLoader( );
+    loader.load( './Components/sam_textured.obj', function ( object ) {
+        object.scale.set(0.01, 0.01, 0.01);
+        object.traverse( function ( child ) {
+            if ( child instanceof THREE.Mesh ) {
+                child.material.map = texture;
+            }
+        } );	
+        object.position.set(-2.5, 2, 48);
+        object.rotation.y = Math.PI;
+        
+        player = object;
+        scene.add(object);
+
+    } );
+
+
 }
 
 function add_obstacle()
@@ -199,6 +214,7 @@ function handle_input()
 function detect_end()
 {
     //I'm sorry
+    //Dammit CB...
     var endx, endz, playx, playz, r1, r2;
     endx = -2.5;
     endz = -47.5;
@@ -208,7 +224,7 @@ function detect_end()
     r2 = Math.sqrt((endx - playx) *(endx - playx) +  (endz - playz) * (endz - playz));
     if(r2 < r1)
     {
-        level++;
+        level++
         alert("PUT SOMETHING HERE");
         reset();
         //add_obstacle();
@@ -216,6 +232,7 @@ function detect_end()
 }
 
 //collision detection for the obstacles
+// I might be able to combine this with collision detection in detect_collisions() -- Wesley
 function obstacle_collison()
 {
     var playx, playz, r1, r2;

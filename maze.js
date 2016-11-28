@@ -126,7 +126,7 @@ function setupMaze(){
 	];
 	
 	// var wallMaterial= new THREE.MeshLambertMaterial({ color: 0x003399 });
-	var wallMaterial= new THREE.MeshLambertMaterial({ map: THREE.ImageUtils.loadTexture('brick_wall.jpg') });
+	var wallMaterial= new THREE.MeshLambertMaterial({ map: THREE.ImageUtils.loadTexture('./Components/brick_wall.jpg') });
 	var wallGeometry= new THREE.CubeGeometry(0.5,5,5.5);
 	
 	for(var i=0; i<x_pos.length; i++){
