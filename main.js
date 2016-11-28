@@ -217,6 +217,25 @@ function detect_end()
     }
 }
 
+//collision detection for the obstacles
+function obstacle_collison()
+{
+    var playx, playz, r1, r2;
+    playx = player.position.x;
+    playz = player.position.z;
+    r1 = .75 /*obstacle radius*/ + .5 /*player radius*/;
+    for(var i = 0; i < obstacles.length; i++)
+    {
+        r2 = Math.sqrt( Math.pow((playx - obstacles[i].position.x), 2) + Math.pow((playz - obstacles[i].position.z), 2));
+        if(r2<r1)
+        {
+            alert("Try Again");
+            reset();
+        }
+    }
+
+}
+
 
 
 function detect_collisions()
@@ -225,6 +244,7 @@ function detect_collisions()
     //and http://webmaestro.fr/collisions-detection-three-js-raycasting/
 
     detect_end();
+    obstacle_collison();
     this.rays= [
         new THREE.Vector3(0, 0, 1),
         new THREE.Vector3(1, 0, 1),
