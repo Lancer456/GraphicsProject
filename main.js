@@ -155,7 +155,6 @@ function handle_input()
 
     if(currentlyPressedKeys[65] == true)
     { //A key
-\
        speed[0]= -.205;
        player.rotation.y = 3 * (Math.PI/2);
     }
