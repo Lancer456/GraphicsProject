@@ -1,11 +1,16 @@
+var scene, player, cube, speed;
 var currentlyPressedKeys= [];
 var collidableMeshes = [];
-var interactable = []; //boolean array-used to detemine if the object is interactable
-var obstacles = [];
-var level = 1; 
+// var interactable = [];  // Removed because it wasn't being used
 
+var level = 1; // I'm not sure how well a leveling system would work - Wesley
 
+var lognum = 0;
+// create scene object
 //7.65, 1, -3, 
+
+var obstacles = [];
+
 var obsx = [
     7.65, 0
     ];
@@ -25,12 +30,6 @@ var obs_range = [
     ];
 var obs_speed = .3;
 
-    
-
-var lognum = 0;
-// create scene object
-var scene, player, cube, speed;
-
 window.onload= function init(){
     window.addEventListener("keydown", function(event){
 		currentlyPressedKeys[event.keyCode]= true;
@@ -49,10 +48,6 @@ window.onload= function init(){
 
 	// create scene object
 	scene= new THREE.Scene;
-
-	var playerMaterial= new THREE.MeshLambertMaterial({ color: 0x890000});
-
-	var sphereGeom= new THREE.SphereGeometry(.5, 50);
 
     // player = new THREE.Mesh(sphereGeom, playerMaterial);
     player = new THREE.Object3D();
@@ -87,7 +82,8 @@ window.onload= function init(){
 
 	player.position.set(-2.5, 1, 48);
 
-	interactable.push(true);
+    scene.add(player);
+
    
 
 	var geometry= new THREE.PlaneGeometry(100, 100, 32);
@@ -99,6 +95,8 @@ window.onload= function init(){
 	var material= new THREE.MeshLambertMaterial({ map: floorTexture, side: THREE.DoubleSide });
 	plane= new THREE.Mesh(geometry, material);
 	plane.rotation.x= Math.PI/2;
+
+    scene.add(plane);
 
 	// create perspective camera
 	camera= new THREE.PerspectiveCamera(45, width / height, 0.1, 10000);
@@ -113,17 +111,17 @@ window.onload= function init(){
 
 	// add lighting and add to scene 
 
-	pointLight= new THREE.PointLight(0xaabbcc);
-	pointLight.position.x= player.position.x;
-    pointLight.y= 2;
-    pointLight.z= player.position.z+20;
+	pointLight= new THREE.PointLight(0xe1ad24, 1, 10);
+	pointLight.position.set(player.position.x, player.position.y +1, player.position.z)
+    scene.add(pointLight);
+    player.add(pointLight)
 
+    scene.add(pointLight)
     var ambientLight= new THREE.AmbientLight(0x464646);
 
-	scene.add(pointLight);
-	scene.add(player);
-	scene.add(plane);
+    
     scene.add(ambientLight);
+    
     add_obstacle();
 
 
