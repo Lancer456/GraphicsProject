@@ -32,7 +32,12 @@ window.onload= function init(){
 	interactable.push(true);
 
 	var geometry= new THREE.PlaneGeometry(100, 100, 32);
-	var material= new THREE.MeshLambertMaterial( {color: 0x404040, side: THREE.DoubleSide} );
+	// var material= new THREE.MeshLambertMaterial({ color: 0x404040, side: THREE.DoubleSide });
+	var floorTexture= new THREE.ImageUtils.loadTexture('stone_floor.jpg');
+	floorTexture.wrapS= floorTexture.wrapT= THREE.RepeatWrapping;
+	floorTexture.repeat.set(20, 20);
+	
+	var material= new THREE.MeshLambertMaterial({ map: floorTexture, side: THREE.DoubleSide });
 	plane= new THREE.Mesh(geometry, material);
 	plane.rotation.x= Math.PI/2;
 
@@ -69,23 +74,23 @@ window.onload= function init(){
     
 function handle_input()
 {
-    speed = [0,0,0]
+    speed = [0,0,0];
 
     if(currentlyPressedKeys[65] == true)
     { //A key
-       speed[0]= -.05
+       speed[0]= -.2;
     }
     if(currentlyPressedKeys[68] == true)
     { //D key
-        speed[0]= .05;
+        speed[0]= .2;
     }
     if(currentlyPressedKeys[87] == true) //W key
     { 
-        speed[2]= -.05
+        speed[2]= -.2;
     }
     if(currentlyPressedKeys[83] == true) //S key
     { 
-        speed[2]= .05
+        speed[2]= .2;
     }
 
     if(currentlyPressedKeys[16] == true) //ShiftKey
@@ -95,16 +100,16 @@ function handle_input()
             speed[i] = speed[i] * 1.5;
         }
     }
-    if(currentlyPressedKeys[81] == true) //Q key
-    {
-		camera.position.y -= 1;
-		camera.position.z -= .25;
-    }
-	if(currentlyPressedKeys[69] == true) //E key
-    {
-		camera.position.y += 1;
-		camera.position.z += .25;
-    }
+    // if(currentlyPressedKeys[81] == true) //Q key
+    // {
+		// camera.position.y -= 1;
+		// camera.position.z -= .25;
+    // }
+	// if(currentlyPressedKeys[69] == true) //E key
+    // {
+		// camera.position.y += 1;
+		// camera.position.z += .25;
+    // }
 }
 
 function detect_collisions()
@@ -129,7 +134,7 @@ function detect_collisions()
     {
 		var directionVector= rays[i];
         var ray= new THREE.Raycaster(originPoint, directionVector.clone().normalize());
-		var maximumDist= .5;
+		var maximumDist= .6;
 		var collisionResults= ray.intersectObjects(collidableMeshes);
 		if (collisionResults.length > 0 && collisionResults[0].distance < maximumDist)
         {
