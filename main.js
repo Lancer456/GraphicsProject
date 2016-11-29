@@ -1,4 +1,4 @@
-var scene, player, cube, speed, score, level = 1;
+var scene, player, cube, speed, score = 0, level = 1;
 var currentlyPressedKeys= [];
 var collidableMeshes = [];
 var obstacles = [], treasures = [];
@@ -41,7 +41,9 @@ window.onload= function init(){
     scene.add(player);
 
     create_obstacles();
+    create_treasures();
 
+    // Create Floor
 	var geometry= new THREE.PlaneGeometry(100, 100, 32);
 	// var material= new THREE.MeshLambertMaterial({ color: 0x404040, side: THREE.DoubleSide });
 	var floorTexture= new THREE.ImageUtils.loadTexture('./Components/stone_floor.jpg');
@@ -78,8 +80,6 @@ window.onload= function init(){
     
     scene.add(ambientLight);
     
-    add_obstacle();
-
 
 
 	setupMaze();
@@ -113,7 +113,21 @@ function create_obstacles()
 
     obs_speed = .3;
 
+    add_obstacle();
 }
+
+function create_treasures()
+{
+    var geometry = new THREE.BoxGeometry(2, 2, 2);
+    var material= new THREE.MeshLambertMaterial({ color: 0xFFD700, side: THREE.DoubleSide });
+
+    var treasureBox = new THREE.Mesh(geometry, material);
+    treasureBox.position.set(22, 1, 37.5)
+    treasures.push(treasureBox)
+    collidableMeshes.push(treasureBox)
+    scene.add(treasureBox)
+}
+
 function create_player()
 {
     player = new THREE.Object3D();
@@ -233,6 +247,7 @@ function detect_end()
 
 //collision detection for the obstacles
 // I might be able to combine this with collision detection in detect_collisions() -- Wesley
+// Nevermind I gave up...
 function obstacle_collison()
 {
     var playx, playz, r1, r2;
@@ -245,10 +260,36 @@ function obstacle_collison()
         if(r2<r1)
         {
             alert("Try Again");
+            score -= 50;
             reset();
         }
     }
 
+}
+
+function treasure_collision()
+{
+    var r1, r2;
+    var playx = player.position.x;
+    var playz = player.position.z;
+    r1 = 1.2 + .5 /*player radius*/;
+    for(var i = treasures.length-1; i >=0; i--)
+    {
+        r2 = Math.sqrt( Math.pow((playx - treasures[i].position.x), 2) + Math.pow((playz - treasures[i].position.z), 2));
+        if(r2<r1)
+        {
+            // Increment Score and remove the treasure so it can only be picked up once
+            score += 50;
+            scene.remove(treasures[i])
+            var loc = collidableMeshes.indexOf(treasures[i]);
+            if(loc != -1)
+            {
+                collidableMeshes.splice(loc, 1);
+            }
+            treasures.splice(i, 1);
+            console.log(score)
+        }
+    }
 }
 
 
@@ -260,6 +301,7 @@ function detect_collisions()
 
     detect_end();
     obstacle_collison();
+    treasure_collision();
     this.rays= [
         new THREE.Vector3(0, 0, 1),
         new THREE.Vector3(1, 0, 1),
@@ -280,7 +322,8 @@ function detect_collisions()
 		var maximumDist= .6;
 		var collisionResults= ray.intersectObjects(collidableMeshes);
 		if (collisionResults.length > 0 && collisionResults[0].distance < maximumDist)
-        {
+        { 
+
             console.log("Hit");
             if(directionVector.x > 0 && speed[0] > 0)
             {
@@ -313,6 +356,7 @@ function update_position()
 
     for(var i = 0; i < obstacles.length; i++)
     {
+        
         if(obs_direction[i] == 'x')
         {   
             if(Math.abs(obstacles[i].position.x - obsx[i]) >= obs_range[i])
