@@ -1,14 +1,13 @@
 var scene, player, cube, speed, score = 0, level = 1;
+var scoreText;
 var currentlyPressedKeys= [];
 var collidableMeshes = [];
 var obstacles = [], treasures = [];
 // var interactable = [];  // Removed because it wasn't being used
 
-var lognum = 0;
-var detect= true, obDetect= true;
-// create scene object
-//7.65, 1, -3, 
 
+//7.65, 1, -3, 
+// obstacle variables
 var obsx;
 var obsz;
 //directions the obstacles move
@@ -16,6 +15,10 @@ var obs_direction;
 var obs_velocity;
 var obs_range;
 var obs_speed;
+
+// For Debugging purposes only
+var lognum = 0;
+var detect= true, obDetect= true;
 
 window.onload= function init(){
     window.addEventListener("keydown", function(event){
@@ -36,13 +39,13 @@ window.onload= function init(){
 	// create scene object
 	scene= new THREE.Scene;
 
+
     // ---- Player Creation -----
     create_player()
 	
 
     // Create Floor
 	var geometry= new THREE.PlaneGeometry(100, 100, 32);
-	// var material= new THREE.MeshLambertMaterial({ color: 0x404040, side: THREE.DoubleSide });
 	var floorTexture= new THREE.ImageUtils.loadTexture('./Components/stone_floor.jpg');
 	floorTexture.wrapS= floorTexture.wrapT= THREE.RepeatWrapping;
 	floorTexture.repeat.set(20, 20);
@@ -67,6 +70,9 @@ window.onload= function init(){
 	// add lighting to scene
     init_lighting();
 
+    //Add text on the screen
+    add_text();
+
     //Initializing level compnonets
 	setupMaze();
     create_obstacles();
@@ -74,6 +80,27 @@ window.onload= function init(){
 
     renderer.render(scene, camera);
     render();
+}
+
+function add_text()
+{
+    var textGeometry = new THREE.TextGeometry( "Score: " + score, 
+    {
+        size: .05,
+        height: .005,
+        curveSegments: 12,
+
+    });
+
+    var textMaterial = new THREE.MeshPhongMaterial( 
+        { color: 0xff0000, specular: 0xffffff }
+    );
+
+    scoreText = new THREE.Mesh( textGeometry, textMaterial );
+    scoreText.position.set(-2.5, 5, 50);
+    scoreText.rotation.x = -Math.PI / 2
+    collidableMeshes.push(scoreText)
+    scene.add( scoreText );
 }
 
 function create_obstacles()
