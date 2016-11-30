@@ -5,6 +5,7 @@ var obstacles = [], treasures = [];
 // var interactable = [];  // Removed because it wasn't being used
 
 var lognum = 0;
+var detect= true, obDetect= true;
 // create scene object
 //7.65, 1, -3, 
 
@@ -112,8 +113,8 @@ function create_obstacles()
     ];
 
     obs_speed = .3;
-
 }
+
 function create_player()
 {
     player = new THREE.Object3D();
@@ -171,13 +172,13 @@ function handle_input()
 {
     speed = [0,0,0];
 
-    if(currentlyPressedKeys[65] == true)
-    { //A key
+    if(currentlyPressedKeys[65] == true) //A key
+    {
        speed[0]= -.205;
        player.rotation.y = 3 * (Math.PI/2);
     }
-    if(currentlyPressedKeys[68] == true)
-    { //D key
+    if(currentlyPressedKeys[68] == true) //D key
+    {
         speed[0]= .205;
         player.rotation.y = Math.PI/2;
     }
@@ -199,16 +200,35 @@ function handle_input()
             speed[i] = speed[i] * 1.5;
         }
     }
-    // if(currentlyPressedKeys[81] == true) //Q key
-    // {
-		// camera.position.y -= 1;
-		// camera.position.z -= .25;
-    // }
-	// if(currentlyPressedKeys[69] == true) //E key
-    // {
-		// camera.position.y += 1;
-		// camera.position.z += .25;
-    // }
+	//Development commands
+	//Z to move player to near exit
+	//X to toggle collision detection with walls
+	//C to toggle obstacle detection
+    if(currentlyPressedKeys[81] == true) //Q key
+    {
+		camera.position.y -= 1;
+		camera.position.z -= .25;
+    }
+	if(currentlyPressedKeys[69] == true) //E key
+    {
+		camera.position.y += 1;
+		camera.position.z += .25;
+    }
+	if(currentlyPressedKeys[90] == true) //Z key
+	{
+		player.position.set(-2.5, 1, -42);
+		camera.position.x= player.position.x;
+		camera.position.y= 7;
+		camera.position.z= player.position.z+2.5;
+	}
+	if(currentlyPressedKeys[88] == true) //X key
+	{
+		detect= !detect;
+	}
+	if(currentlyPressedKeys[67] == true) //C key
+	{
+		obDetect= !obDetect;
+	}
 }
 
 function detect_end()
@@ -220,12 +240,13 @@ function detect_end()
     endz = -47.5;
     playx = player.position.x;
     playz = player.position.z;
-    r1 = .5
-    r2 = Math.sqrt((endx - playx) *(endx - playx) +  (endz - playz) * (endz - playz));
+    r1 = 2;
+    r2 = Math.sqrt((endx - playx) * (endx - playx) + (endz - playz) * (endz - playz));
     if(r2 < r1)
     {
         level++
         alert("PUT SOMETHING HERE");
+		currentlyPressedKeys= [];
         reset();
         //add_obstacle();
     }
@@ -235,6 +256,7 @@ function detect_end()
 // I might be able to combine this with collision detection in detect_collisions() -- Wesley
 function obstacle_collison()
 {
+	if(obDetect == true){
     var playx, playz, r1, r2;
     playx = player.position.x;
     playz = player.position.z;
@@ -248,10 +270,8 @@ function obstacle_collison()
             reset();
         }
     }
-
+	}
 }
-
-
 
 function detect_collisions()
 {
@@ -260,6 +280,7 @@ function detect_collisions()
 
     detect_end();
     obstacle_collison();
+	if(detect == true){
     this.rays= [
         new THREE.Vector3(0, 0, 1),
         new THREE.Vector3(1, 0, 1),
@@ -281,7 +302,7 @@ function detect_collisions()
 		var collisionResults= ray.intersectObjects(collidableMeshes);
 		if (collisionResults.length > 0 && collisionResults[0].distance < maximumDist)
         {
-            console.log("Hit");
+            // console.log("Hit");
             if(directionVector.x > 0 && speed[0] > 0)
             {
                 speed[0] = 0;
@@ -299,6 +320,7 @@ function detect_collisions()
                 speed[2] = 0;
             }
         }
+	}
 	}
 }
 
@@ -334,7 +356,7 @@ function update_position()
 
     if(lognum == 30)
     {
-        console.log("x:" + player.position.x + " z: " + player.position.z);
+        // console.log("x:" + player.position.x + " z: " + player.position.z);
         lognum = 0;
     }
     
