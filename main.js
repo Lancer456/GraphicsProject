@@ -41,8 +41,7 @@ window.onload= function init(){
 	player.position.set(-2.5, 1, 48);
     scene.add(player);
 
-    create_obstacles();
-    create_treasures();
+
 
     // Create Floor
 	var geometry= new THREE.PlaneGeometry(100, 100, 32);
@@ -68,7 +67,7 @@ window.onload= function init(){
 	scene.add(camera); 
 	renderer.render(scene, camera);
 
-	// add lighting and add to scene 
+	// add lighting to scene
 
 	pointLight= new THREE.PointLight(0xe1ad24, 1, 10);
 	pointLight.position.set(player.position.x, player.position.y +1, player.position.z)
@@ -80,10 +79,11 @@ window.onload= function init(){
 
     
     scene.add(ambientLight);
-    
 
-
+    //Initializing level compnonets
 	setupMaze();
+    create_obstacles();
+    create_treasures();
 
     renderer.render(scene, camera);
     render();
@@ -115,41 +115,6 @@ function create_obstacles()
     obs_speed = .3;
 
     add_obstacle();
-}
-
-function create_treasures()
-{
-    var geometry = new THREE.BoxGeometry(2, 2, 2);
-    var material= new THREE.MeshLambertMaterial({ color: 0xFFD700, side: THREE.DoubleSide });
-    var texture = new THREE.Texture();
-    var loader = new THREE.ImageLoader( );
-    loader.load( './Components/treasure_chest.jpg', function ( image ) 
-    {
-        texture.image = image;
-        texture.needsUpdate = true;
-    } );
-
-    // Loads in the treasure box Model
-    var loader = new THREE.OBJLoader( );
-    loader.load( './Components/treasure_chest.obj', function ( object ) 
-    {
-        //object.scale.set(0.01, 0.01, 0.01);
-        object.traverse( function ( child )
-        {
-            if ( child instanceof THREE.Mesh ) 
-            {
-                child.material.map = texture;
-            }
-        } );	
-        
-        object.position.set(22, 1, 37.5)
-        object.rotation.y = Math.PI / 2;
-        treasures.push(object)
-        collidableMeshes.push(object)
-        scene.add(object)
-    });
-
-    
 }
 
 function create_player()
