@@ -113,7 +113,6 @@ function create_obstacles()
     ];
 
     obs_speed = .3;
-}
 
     add_obstacle();
 }
