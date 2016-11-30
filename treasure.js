@@ -1,3 +1,14 @@
+var positions = [
+    [22, 1, 37.5]
+
+];
+
+var rotations = [
+    Math.PI/2
+];
+
+
+
 function create_treasures()
 {
     var geometry = new THREE.BoxGeometry(2, 2, 2);
@@ -23,11 +34,16 @@ function create_treasures()
             }
         } );	
         
-        object.position.set(22, 1, 37.5)
-        object.rotation.y = Math.PI / 2;
-        treasures.push(object)
-        collidableMeshes.push(object)
-        scene.add(object)
+        for(var i=0; i<positions.length && i< rotations.length; i++)
+        {
+            var treasure = object.clone();
+            treasure.position.set(positions[i][0], positions[i][1], positions[i][2]);
+            treasure.rotation.y = rotations[i];
+            treasures.push(treasure)
+            collidableMeshes.push(treasure)
+            scene.add(treasure)
+        }
+
     });
 
     
