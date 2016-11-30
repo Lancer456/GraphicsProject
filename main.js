@@ -71,7 +71,7 @@ window.onload= function init(){
     init_lighting();
 
     //Add text on the screen
-    add_text();
+    fix_text();
 
     //Initializing level compnonets
 	setupMaze();
@@ -82,8 +82,12 @@ window.onload= function init(){
     render();
 }
 
-function add_text()
+function fix_text()
 {
+    if(scoreText != null)
+    {
+        scene.remove(scoreText);
+    }
     var textGeometry = new THREE.TextGeometry( "Score: " + score, 
     {
         size: .05,
@@ -95,9 +99,9 @@ function add_text()
     var textMaterial = new THREE.MeshBasicMaterial( 
         { color: 0xff0000 }
     );
-
+    //  -2.5, 2, 48
     scoreText = new THREE.Mesh( textGeometry, textMaterial );
-    scoreText.position.set(-3, 5, 50);
+    scoreText.position.set(player.position.x - .5, 5, player.position.z + 2);
     scoreText.rotation.x =  -Math.PI/2 + .5; //Set to match camera angle
     scene.add( scoreText );
 }
@@ -232,10 +236,8 @@ function handle_input()
     }
 	if(currentlyPressedKeys[90] == true) //Z key
 	{
-		player.position.set(-2.5, 1, -42);
-		camera.position.x= player.position.x;
-		camera.position.y= 7;
-		camera.position.z= player.position.z+2.5;
+		teleport([-2.5, 1, -42])
+		
 	}
 	if(currentlyPressedKeys[88] == true) //X key
 	{
@@ -245,6 +247,15 @@ function handle_input()
 	{
 		obDetect= !obDetect;
 	}
+}
+
+function teleport(position) // Teleports player and associated objects to a specified position
+{
+    player.position.set(position[0], position[1], position[2]);
+    camera.position.x= player.position.x;
+    camera.position.y= 7;
+    camera.position.z= player.position.z+2.5;
+    fix_text();
 }
 
 function detect_end()
@@ -284,8 +295,8 @@ function obstacle_collison()
             r2 = Math.sqrt( Math.pow((playx - obstacles[i].position.x), 2) + Math.pow((playz - obstacles[i].position.z), 2));
             if(r2<r1)
             {
-                alert("Try Again");
                 score -= 50;
+                fix_text()
                 reset();
             }
         }
@@ -297,7 +308,7 @@ function treasure_collision()
     var r1, r2;
     var playx = player.position.x;
     var playz = player.position.z;
-    r1 = 1.2 + .5 /*player radius*/;
+    r1 = 1 + .5 /*player radius*/;
     for(var i = treasures.length-1; i >=0; i--)
     {
         r2 = Math.sqrt( Math.pow((playx - treasures[i].position.x), 2) + Math.pow((playz - treasures[i].position.z), 2));
@@ -312,6 +323,8 @@ function treasure_collision()
                 collidableMeshes.splice(loc, 1);
             }
             treasures.splice(i, 1);
+            fix_text()
+
         }
     }
 }
