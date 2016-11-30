@@ -168,7 +168,6 @@ function create_player()
 
 function add_obstacle()
 {
-     
     //creates an obstacle
     var obstacleMaterial = new THREE.MeshLambertMaterial({color: 0x890000});
     var obstacleGeom = new THREE.SphereGeometry(.75, 50);
@@ -317,8 +316,6 @@ function treasure_collision()
         }
     }
 }
-
-
 
 function detect_collisions()
 {
