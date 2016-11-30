@@ -1,5 +1,5 @@
 var lightPositions = [
-    [-2.5, 2, 48], [20, 2, 37.5]
+    [-2.5, 1.25, 48], [20, 1.25, 37.5]
 ];
 
 function init_lighting()

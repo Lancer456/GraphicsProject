@@ -92,14 +92,13 @@ function add_text()
 
     });
 
-    var textMaterial = new THREE.MeshPhongMaterial( 
-        { color: 0xff0000, specular: 0xffffff }
+    var textMaterial = new THREE.MeshBasicMaterial( 
+        { color: 0xff0000 }
     );
 
     scoreText = new THREE.Mesh( textGeometry, textMaterial );
-    scoreText.position.set(-2.5, 5, 50);
-    scoreText.rotation.x = -Math.PI / 2
-    collidableMeshes.push(scoreText)
+    scoreText.position.set(-3, 5, 50);
+    scoreText.rotation.x =  -Math.PI/2 + .5; //Set to match camera angle
     scene.add( scoreText );
 }
 
@@ -274,21 +273,22 @@ function detect_end()
 // Nevermind I gave up...
 function obstacle_collison()
 {
-	if(obDetect == true){
-    var playx, playz, r1, r2;
-    playx = player.position.x;
-    playz = player.position.z;
-    r1 = .75 /*obstacle radius*/ + .5 /*player radius*/;
-    for(var i = 0; i < obstacles.length; i++)
+	if(obDetect == true)
     {
-        r2 = Math.sqrt( Math.pow((playx - obstacles[i].position.x), 2) + Math.pow((playz - obstacles[i].position.z), 2));
-        if(r2<r1)
+        var playx, playz, r1, r2;
+        playx = player.position.x;
+        playz = player.position.z;
+        r1 = .75 /*obstacle radius*/ + .5 /*player radius*/;
+        for(var i = 0; i < obstacles.length; i++)
         {
-            alert("Try Again");
-            score -= 50;
-            reset();
+            r2 = Math.sqrt( Math.pow((playx - obstacles[i].position.x), 2) + Math.pow((playz - obstacles[i].position.z), 2));
+            if(r2<r1)
+            {
+                alert("Try Again");
+                score -= 50;
+                reset();
+            }
         }
-    }
 	}
 }
 
@@ -312,7 +312,6 @@ function treasure_collision()
                 collidableMeshes.splice(loc, 1);
             }
             treasures.splice(i, 1);
-            console.log(score)
         }
     }
 }
@@ -372,13 +371,17 @@ function detect_collisions()
 
 function update_position()
 {
+
     lognum++;
     camera.position.x += speed[0];
     player.position.x += speed[0];
+    scoreText.position.x += speed[0];
 
     camera.position.z += speed[2];
     player.position.z += speed[2];
+    scoreText.position.z += speed[2];
 
+    // Handles movement of obstacles
     for(var i = 0; i < obstacles.length; i++)
     {
         
@@ -399,7 +402,6 @@ function update_position()
             obstacles[i].position.z += obs_speed * obs_velocity[i];
         }
     }
-
 
     if(lognum == 30)
     {
