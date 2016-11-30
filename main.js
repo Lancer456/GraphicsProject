@@ -38,11 +38,7 @@ window.onload= function init(){
 
     // ---- Player Creation -----
     create_player()
-	player.position.set(-2.5, 1, 48);
-    scene.add(player);
-
-    create_obstacles();
-    create_treasures();
+	
 
     // Create Floor
 	var geometry= new THREE.PlaneGeometry(100, 100, 32);
@@ -68,22 +64,13 @@ window.onload= function init(){
 	scene.add(camera); 
 	renderer.render(scene, camera);
 
-	// add lighting and add to scene 
+	// add lighting to scene
+    init_lighting();
 
-	pointLight= new THREE.PointLight(0xe1ad24, 1, 10);
-	pointLight.position.set(player.position.x, player.position.y +1, player.position.z)
-    scene.add(pointLight);
-    player.add(pointLight)
-
-    scene.add(pointLight)
-    var ambientLight= new THREE.AmbientLight(0x464646);
-
-    
-    scene.add(ambientLight);
-    
-
-
+    //Initializing level compnonets
 	setupMaze();
+    create_obstacles();
+    create_treasures();
 
     renderer.render(scene, camera);
     render();
@@ -113,19 +100,8 @@ function create_obstacles()
     ];
 
     obs_speed = .3;
+
     add_obstacle();
-}
-
-function create_treasures()
-{
-    var geometry = new THREE.BoxGeometry(2, 2, 2);
-    var material= new THREE.MeshLambertMaterial({ color: 0xFFD700, side: THREE.DoubleSide });
-
-    var treasureBox = new THREE.Mesh(geometry, material);
-    treasureBox.position.set(22, 1, 37.5)
-    treasures.push(treasureBox)
-    collidableMeshes.push(treasureBox)
-    scene.add(treasureBox)
 }
 
 function create_player()
@@ -155,9 +131,11 @@ function create_player()
         
         player = object;
         scene.add(object);
+        scene.add(player)
 
     } );
 
+    player.position.set(-2.5, 1, 48);
 
 }
 
@@ -321,6 +299,7 @@ function detect_collisions()
     obstacle_collison();
     treasure_collision();
 	if(detect == true){
+
     this.rays= [
         new THREE.Vector3(0, 0, 1),
         new THREE.Vector3(1, 0, 1),
@@ -397,7 +376,7 @@ function update_position()
 
     if(lognum == 30)
     {
-        // console.log("x:" + player.position.x + " z: " + player.position.z);
+        console.log("x:" + player.position.x + " z: " + player.position.z);
         lognum = 0;
     }
     
