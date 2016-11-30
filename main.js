@@ -113,8 +113,6 @@ function create_obstacles()
     ];
 
     obs_speed = .3;
-}
-
     add_obstacle();
 }
 
@@ -165,7 +163,6 @@ function create_player()
 
 function add_obstacle()
 {
-     
     //creates an obstacle
     var obstacleMaterial = new THREE.MeshLambertMaterial({color: 0x890000});
     var obstacleGeom = new THREE.SphereGeometry(.75, 50);
@@ -315,8 +312,6 @@ function treasure_collision()
     }
 }
 
-
-
 function detect_collisions()
 {
     // Collision detection inspired by view-source:http://stemkoski.github.io/Three.js/Collision-Detection.html
@@ -324,8 +319,8 @@ function detect_collisions()
 
     detect_end();
     obstacle_collison();
-	if(detect == true){
     treasure_collision();
+	if(detect == true){
     this.rays= [
         new THREE.Vector3(0, 0, 1),
         new THREE.Vector3(1, 0, 1),
