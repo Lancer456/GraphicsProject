@@ -1,13 +1,18 @@
+var lightPositions = [
+    [-2.5, 2, 48], [20, 2, 37.5]
+];
+
 function init_lighting()
 {
-	var pointLight= new THREE.PointLight(0xe1ad24, 1, 10);
-	pointLight.position.set(player.position.x, player.position.y +1, player.position.z)
-    scene.add(pointLight);
-    player.add(pointLight)
+	var pointLight= new THREE.PointLight(0xe1ad24, 1, 15);
 
-    scene.add(pointLight)
-    var ambientLight= new THREE.AmbientLight(0x464646);
+    for(var i=0; i< lightPositions.length; i++)
+    {
+        var newLight = pointLight.clone();
+        newLight.position.set(lightPositions[i][0], lightPositions[i][1], lightPositions[i][2])
+        scene.add(newLight);
+    }
 
-    
+    var ambientLight= new THREE.AmbientLight(0x404040); //252525 for final value
     scene.add(ambientLight);
 }

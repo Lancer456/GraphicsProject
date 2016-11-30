@@ -38,10 +38,7 @@ window.onload= function init(){
 
     // ---- Player Creation -----
     create_player()
-	player.position.set(-2.5, 1, 48);
-    scene.add(player);
-
-
+	
 
     // Create Floor
 	var geometry= new THREE.PlaneGeometry(100, 100, 32);
@@ -134,9 +131,11 @@ function create_player()
         
         player = object;
         scene.add(object);
+        scene.add(player)
 
     } );
 
+    player.position.set(-2.5, 1, 48);
 
 }
 
@@ -301,8 +300,9 @@ function detect_collisions()
 
     detect_end();
     obstacle_collison();
-	if(detect == true){
     treasure_collision();
+	if(detect == true){
+
     this.rays= [
         new THREE.Vector3(0, 0, 1),
         new THREE.Vector3(1, 0, 1),
@@ -379,7 +379,7 @@ function update_position()
 
     if(lognum == 30)
     {
-        // console.log("x:" + player.position.x + " z: " + player.position.z);
+        console.log("x:" + player.position.x + " z: " + player.position.z);
         lognum = 0;
     }
     

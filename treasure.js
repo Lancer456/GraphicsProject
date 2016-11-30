@@ -1,5 +1,5 @@
-var positions = [
-    [22, 1, 37.5]
+var treasurePositions = [
+    [22, .5, 37.5]
 
 ];
 
@@ -12,7 +12,7 @@ var rotations = [
 function create_treasures()
 {
     var geometry = new THREE.BoxGeometry(2, 2, 2);
-    var material= new THREE.MeshLambertMaterial({ color: 0xFFD700, side: THREE.DoubleSide });
+    var material= new THREE.MeshLambertMaterial({ color: 0xFFFFFF, side: THREE.DoubleSide });
     var texture = new THREE.Texture();
     var loader = new THREE.ImageLoader( );
     loader.load( './Components/treasure_chest.jpg', function ( image ) 
@@ -33,11 +33,12 @@ function create_treasures()
                 child.material.map = texture;
             }
         } );	
-        
-        for(var i=0; i<positions.length && i< rotations.length; i++)
+
+        for(var i=0; i<treasurePositions.length && i< rotations.length; i++)
         {
+            console.log("Treasure chest started")
             var treasure = object.clone();
-            treasure.position.set(positions[i][0], positions[i][1], positions[i][2]);
+            treasure.position.set(treasurePositions[i][0], treasurePositions[i][1], treasurePositions[i][2]);
             treasure.rotation.y = rotations[i];
             treasures.push(treasure)
             collidableMeshes.push(treasure)
