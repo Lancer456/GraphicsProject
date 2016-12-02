@@ -125,8 +125,7 @@ function setupMaze(){
 		Math.PI/2, Math.PI/2, Math.PI/2, Math.PI/2, Math.PI/2, Math.PI/2
 	];
 	
-	// var wallMaterial= new THREE.MeshLambertMaterial({ color: 0x003399 });
-	var wallMaterial= new THREE.MeshLambertMaterial({ map: THREE.ImageUtils.loadTexture('brick_wall.jpg') });
+	var wallMaterial= new THREE.MeshLambertMaterial({ map: THREE.ImageUtils.loadTexture('./Components/brick_wall.jpg') });
 	var wallGeometry= new THREE.CubeGeometry(0.5,5,5.5);
 	
 	for(var i=0; i<x_pos.length; i++){
@@ -139,15 +138,14 @@ function setupMaze(){
 	}
 	
 	var geometry= new THREE.CubeGeometry(5, 0, 5);
-	var material= new THREE.MeshLambertMaterial({ color: 0x990066, map: THREE.ImageUtils.loadTexture('stone_floor.jpg') });
+	var material= new THREE.MeshLambertMaterial({ color: 0x990066, transparent: true, opacity: 0.25 });
 	exit= new THREE.Mesh(geometry, material);
 	exit.position.set(-2.5, 0.1, -47.5);
 	scene.add(exit);
 }
 
 function outerWalls(){
-	// var wallMaterial= new THREE.MeshLambertMaterial({ color: 0x003399 });
-	var wallTexture= new THREE.ImageUtils.loadTexture('brick_wall.jpg');
+	var wallTexture= new THREE.ImageUtils.loadTexture('./Components/brick_wall.jpg');
 	wallTexture.wrapS= wallTexture.wrapT= THREE.RepeatWrapping;
 	wallTexture.repeat.set(20, 1);
 	
