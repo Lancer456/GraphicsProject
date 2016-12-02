@@ -2,27 +2,17 @@ var currentlyPressedKeys= [];
 var collidableMeshes = [];
 var interactable = []; //boolean array-used to detemine if the object is interactable
 var obstacles = [];
-var level = 1; 
+var level = 0; 
 
 
 //7.65, 1, -3, 
-var obsx = [
-    7.65, 0
-    ];
-var obsz = [
-    -3, 0
-    ];
+var obsx = [];
+var obsz = [];
 //directions the obstacles move
-var obs_direction = [
-    'z', 'x'
-    ];
-var obs_velocity = [
-    1, 1
-    ];
+var obs_direction = [];
+var obs_velocity = [];
 
-var obs_range = [
-    3, 3
-    ];
+var obs_range = [];
 var obs_speed = .3;
 
     
@@ -31,7 +21,41 @@ var lognum = 0;
 // create scene object
 var scene, player, cube, speed;
 
+
+
+function init_obs()
+{
+    //
+    obsx = [
+    7.65, 2.5, 32.5, 40.0, 17.5,
+    27.5, 35.0, 22.5, 12.5, -27.5,
+    -22.5, -25.0
+    ];
+    //
+    obsz = [
+    -3, 45.5, 30.0, 27.5, 10.5,
+    -2.5, -23.0, -25.0, -13.0, -18.0,
+    -19.0, -48.0
+    ];
+    obs_direction = [
+    'z', 'z', 'z', 'x', 'z',
+    'x', 'x', 'z', 'z', 'z',
+    'z', 'x'
+    ];
+    obs_velocity = [
+    1, 1, -1, -1, 1,
+    -1, -1, 1, -1, 1,
+    -3, -1
+    ];
+    obs_range = [
+    4, 3, 2, 3, 5,
+    5, 2, 5, 4, 5,
+    10, 8
+    ];
+}
+
 window.onload= function init(){
+    init_obs();
     window.addEventListener("keydown", function(event){
 		currentlyPressedKeys[event.keyCode]= true;
     });
@@ -124,7 +148,7 @@ window.onload= function init(){
 	scene.add(player);
 	scene.add(plane);
     scene.add(ambientLight);
-    add_obstacle();
+    initial_obstacles();
 
 
 
@@ -134,16 +158,29 @@ window.onload= function init(){
     render();
 }
 
+function initial_obstacles()
+{
+    var num = obsx.length;
+    //num = 8;
+    for(var i = 0; i < num; i++)
+    {
+        add_obstacle();
+    }
+}
+
 function add_obstacle()
 {
-     
-    //creates an obstacle
-    var obstacleMaterial = new THREE.MeshLambertMaterial({color: 0x890000});
-    var obstacleGeom = new THREE.SphereGeometry(.75, 50);
-    obstacles.push(new THREE.Mesh(obstacleGeom, obstacleMaterial));
-    obstacles[level - 1].position.set(obsx[level - 1], 1, obsz[level - 1]);
+     if(level < obsx.length)
+     {
+        //creates an obstacle
+        var obstacleMaterial = new THREE.MeshLambertMaterial({color: 0x890000});
+        var obstacleGeom = new THREE.SphereGeometry(.75, 50);
+        obstacles.push(new THREE.Mesh(obstacleGeom, obstacleMaterial));
+        obstacles[level].position.set(obsx[level], 1, obsz[level]);
 
-    scene.add(obstacles[level - 1]);
+        scene.add(obstacles[level]);
+        level++;
+     }
 }
 //resets the position
 function reset()
@@ -186,16 +223,16 @@ function handle_input()
             speed[i] = speed[i] * 1.5;
         }
     }
-    // if(currentlyPressedKeys[81] == true) //Q key
-    // {
-		// camera.position.y -= 1;
-		// camera.position.z -= .25;
-    // }
-	// if(currentlyPressedKeys[69] == true) //E key
-    // {
-		// camera.position.y += 1;
-		// camera.position.z += .25;
-    // }
+    if(currentlyPressedKeys[81] == true) //Q key
+    {
+		camera.position.y -= 1;
+		camera.position.z -= .25;
+    }
+	if(currentlyPressedKeys[69] == true) //E key
+    {
+		camera.position.y += 1;
+		camera.position.z += .25;
+    }
 }
 
 function detect_end()
@@ -210,10 +247,9 @@ function detect_end()
     r2 = Math.sqrt((endx - playx) *(endx - playx) +  (endz - playz) * (endz - playz));
     if(r2 < r1)
     {
-        level++;
         alert("PUT SOMETHING HERE");
         reset();
-        //add_obstacle();
+        add_obstacle();
     }
 }
 
