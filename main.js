@@ -1,4 +1,4 @@
-var scene, player, cube, speed, score = 0, level = 1;
+var scene, player, cube, speed, score = 0, level = 0;
 var scoreText;
 var currentlyPressedKeys= [];
 var collidableMeshes = [];
@@ -108,30 +108,46 @@ function fix_text()
 
 function create_obstacles()
 {
-    obsx = [
-    7.65, 0
+     obsx = [
+    7.65, 2.5, 32.5, 40.0, 17.5,
+    27.5, 35.0, 22.5, 12.5, -27.5,
+    -22.5, -25.0
     ];
-
+    //
     obsz = [
-    -3, 0
+    -3, 45.5, 30.0, 27.5, 10.5,
+    -2.5, -23.0, -25.0, -13.0, -18.0,
+    -19.0, -48.0
     ];
-
-//directions the obstacles move
     obs_direction = [
+    'z', 'z', 'z', 'x', 'z',
+    'x', 'x', 'z', 'z', 'z',
     'z', 'x'
     ];
-
     obs_velocity = [
-    1, 1
+    1, 1, -1, -1, 1,
+    -1, -1, 1, -1, 1,
+    -3, -1
     ];
-
     obs_range = [
-    3, 3
+    4, 3, 2, 3, 5,
+    5, 2, 5, 4, 5,
+    10, 8
     ];
 
     obs_speed = .3;
 
-    add_obstacle();
+    initial_obstacles();
+}
+
+function initial_obstacles()
+{
+    var num = obsx.length;
+    //num = 8;
+    for(var i = 0; i < num; i++)
+    {
+        add_obstacle();
+    }
 }
 
 function create_player()
@@ -171,13 +187,17 @@ function create_player()
 
 function add_obstacle()
 {
-    //creates an obstacle
-    var obstacleMaterial = new THREE.MeshLambertMaterial({color: 0x890000});
-    var obstacleGeom = new THREE.SphereGeometry(.75, 50);
-    obstacles.push(new THREE.Mesh(obstacleGeom, obstacleMaterial));
-    obstacles[level - 1].position.set(obsx[level - 1], 1, obsz[level - 1]);
+     if(level < obsx.length)
+     {
+        //creates an obstacle
+        var obstacleMaterial = new THREE.MeshLambertMaterial({color: 0x890000});
+        var obstacleGeom = new THREE.SphereGeometry(.75, 50);
+        obstacles.push(new THREE.Mesh(obstacleGeom, obstacleMaterial));
+        obstacles[level].position.set(obsx[level], 1, obsz[level]);
 
-    scene.add(obstacles[level - 1]);
+        scene.add(obstacles[level]);
+        level++;
+     }
 }
 //resets the position
 function reset()
@@ -271,11 +291,10 @@ function detect_end()
     r2 = Math.sqrt((endx - playx) * (endx - playx) + (endz - playz) * (endz - playz));
     if(r2 < r1)
     {
-        level++
         alert("PUT SOMETHING HERE");
 		currentlyPressedKeys= [];
         reset();
-        //add_obstacle();
+        add_obstacle();
     }
 }
 
