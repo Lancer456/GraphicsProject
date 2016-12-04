@@ -194,22 +194,6 @@ function create_player()
     player.position.set(-2.5, 0, 48);
 }
 
-function animate() {
-    // var delta = clock.getDelta();
-    // console.log("mixers length: " + mixers.length);
-    if (mixers.length > 0)        
-        mixers[0].update(.15);
-    
-    // set the timeout to 15 frames per second rather than 30
-    setTimeout( function() {
-        requestAnimationFrame( animate );
-    }, 1000/15);
-    
-    // requestAnimationFrame( animate );
-    render();
-
-}
-
 
 function add_obstacle()
 {
@@ -464,15 +448,32 @@ function update_position()
 
     if(lognum == 30)
     {
-        // console.log("x:" + player.position.x + " z: " + player.position.z);
+        console.log("x:" + player.position.x + " z: " + player.position.z);
         lognum = 0;
     }
     
 
 }
 
+function animate() {
+    // var delta = clock.getDelta();
+    // console.log("mixers length: " + mixers.length);
+    if (mixers.length > 0)        
+        mixers[0].update(.15);
+    
+    // set the timeout to 15 frames per second rather than 30
+    // setTimeout( function() {
+    //     requestAnimationFrame( animate );
+    // }, 1000/15);
+    
+    // requestAnimationFrame( animate );
+    // render();
+
+}
+
 function render()
 {
+    animate()
     handle_input();
     detect_collisions();
     update_position();
@@ -481,6 +482,6 @@ function render()
     // set the timeout to 15 frames per second rather than 30
     setTimeout( function() {
         requestAnimationFrame( render );
-    }, 1000/15);
+    }, 1000/60);
     // requestAnimationFrame(render);
 }
