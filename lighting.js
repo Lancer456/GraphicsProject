@@ -1,11 +1,14 @@
 var lightPositions = [
-    [-2.5, 1.25, 48], [20, 1.25, 37.5]
+    [-2.5, 1.25, 48], [20, 1.25, 37.5], [22, 1.25, 41],
+    [25, 1.25, 48], [27, 1.25, 27], [47, 1.25, 45], 
+    [47, 1.25, 32], [47, 1.25, 8.5], [38, 1.25, 18],
+    [19, 1.25, 2.5], [28, 1.25, -2.5]
 ];
 
 function init_lighting()
 {
-	var pointLight= new THREE.PointLight(0xe1ad24, 1, 15);
-
+	var pointLight= new THREE.PointLight(0xe1ad24, 1, 10);
+    // var sprite = new THREE.Sprite( new THREE.SpriteCanvasMaterial( { color: 0xff0040} ) );
     for(var i=0; i< lightPositions.length; i++)
     {
         var newLight = pointLight.clone();
@@ -13,6 +16,6 @@ function init_lighting()
         scene.add(newLight);
     }
 
-    var ambientLight= new THREE.AmbientLight(0x404040); //252525 for final value
+    var ambientLight= new THREE.AmbientLight(0x404040);
     scene.add(ambientLight);
 }

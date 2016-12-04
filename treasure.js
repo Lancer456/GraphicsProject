@@ -1,10 +1,10 @@
 var treasurePositions = [
-    [22, .5, 37.5]
+    [22, .5, 37.5], [23, .5, 48], [47, .5, 43]
 
 ];
 
 var rotations = [
-    Math.PI/2
+    Math.PI/2, 3*Math.PI/2, Math.PI
 ];
 
 
