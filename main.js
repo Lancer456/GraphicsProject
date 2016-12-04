@@ -197,8 +197,8 @@ function create_player()
 function animate() {
     // var delta = clock.getDelta();
     // console.log("mixers length: " + mixers.length);
-    // if (mixers.length > 0)        
-    //     mixers[0].update(.15);
+    if (mixers.length > 0)        
+        mixers[0].update(.15);
     
     // set the timeout to 15 frames per second rather than 30
     setTimeout( function() {
