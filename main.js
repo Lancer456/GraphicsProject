@@ -455,12 +455,14 @@ function update_position()
 
 }
 
-function animate() {
+function animate() 
+{
     // var delta = clock.getDelta();
     // console.log("mixers length: " + mixers.length);
     if (mixers.length > 0)        
-        mixers[0].update(.15);
+        mixers[0].update(.05);
     
+    // --- Too many calls to requestAnimationFrame caused slowdown. Now only 1 per frame in the render function
     // set the timeout to 15 frames per second rather than 30
     // setTimeout( function() {
     //     requestAnimationFrame( animate );
@@ -479,7 +481,7 @@ function render()
     update_position();
     renderer.render(scene, camera);
 
-    // set the timeout to 15 frames per second rather than 30
+    // set the timeout to 60 frames per second rather than 30
     setTimeout( function() {
         requestAnimationFrame( render );
     }, 1000/60);
