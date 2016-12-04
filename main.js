@@ -5,6 +5,11 @@ var collidableMeshes = [];
 var obstacles = [], treasures = [];
 // var interactable = [];  // Removed because it wasn't being used
 
+// for player model animation
+var mesh, action = {}, mixer, fadeAction;
+var mixers = [];
+// var clock = new THREE.Clock; 
+
 
 //7.65, 1, -3, 
 // obstacle variables
@@ -42,7 +47,6 @@ window.onload= function init(){
 
     // ---- Player Creation -----
     create_player()
-	
 
     // Create Floor
 	var geometry= new THREE.PlaneGeometry(100, 100, 32);
@@ -78,8 +82,10 @@ window.onload= function init(){
     create_obstacles();
     create_treasures();
 
+
     renderer.render(scene, camera);
     render();
+    animate();
 }
 
 function fix_text()
@@ -135,7 +141,7 @@ function create_obstacles()
     10, 8
     ];
 
-    obs_speed = .3;
+    obs_speed = .05;
 
     initial_obstacles();
 }
@@ -154,36 +160,56 @@ function create_player()
 {
     player = new THREE.Object3D();
 
-    // Loads in Texture
+    // Loads in player
 
-    var texture = new THREE.Texture();
-    var loader = new THREE.ImageLoader( );
-    loader.load( './Components/Character Texture Lightened.jpg', function ( image ) {
-        texture.image = image;
-        texture.needsUpdate = true;
-    } );
 
-    // Loads in the player Model
-    var loader = new THREE.OBJLoader( );
-    loader.load( './Components/sam_textured.obj', function ( object ) {
-        object.scale.set(0.01, 0.01, 0.01);
-        object.traverse( function ( child ) {
-            if ( child instanceof THREE.Mesh ) {
-                child.material.map = texture;
-            }
-        } );	
-        object.position.set(-2.5, 2, 48);
-        object.rotation.y = Math.PI;
+    var loader = new THREE.JSONLoader();
+
+    loader.load( './components/sam_textured_rigged_animated.json' , function( geometry, materials ) {
+
+        materials.forEach( function ( material ) {
+            material.skinning = true;
+        });
+
+        mesh = new THREE.SkinnedMesh(
+            geometry, new THREE.MeshFaceMaterial( materials )
+        );
+
+        mesh.scale.set(.25,.25,.25);
+        mixer = new THREE.AnimationMixer( mesh );
+
+        action.idle = mixer.clipAction( mesh.geometry.animations[0] );
         
-        player = object;
-        scene.add(object);
-        scene.add(player)
 
-    } );
+        mesh.position.set(-2.5, 0, 48);
+        mesh.rotation.y = Math.PI;
+        player = mesh;
+        scene.add( player );
+        action.idle.setEffectiveWeight(1).play();
+        // mixer.clipAction(mesh.geometry.animations[0]).play();
+        mixers.push(mixer);
+    });
 
-    player.position.set(-2.5, 1, 48);
+
+    player.position.set(-2.5, 0, 48);
+}
+
+function animate() {
+    // var delta = clock.getDelta();
+    // console.log("mixers length: " + mixers.length);
+    // if (mixers.length > 0)        
+    //     mixers[0].update(.15);
+    
+    // set the timeout to 15 frames per second rather than 30
+    setTimeout( function() {
+        requestAnimationFrame( animate );
+    }, 1000/15);
+    
+    // requestAnimationFrame( animate );
+    render();
 
 }
+
 
 function add_obstacle()
 {
@@ -202,10 +228,11 @@ function add_obstacle()
 //resets the position
 function reset()
 {
-	player.position.set(-2.5, 1, 48);
+	player.position.set(-2.5, 0, 48);
     camera.position.x= player.position.x;
 	camera.position.y= 7;
 	camera.position.z= player.position.z+2.5;
+    scoreText.position.set(player.position.x - .5, 5, player.position.z + 2);
 }
     
 function handle_input()
@@ -214,22 +241,22 @@ function handle_input()
 
     if(currentlyPressedKeys[65] == true) //A key
     {
-       speed[0]= -.205;
+       speed[0]= -.1;
        player.rotation.y = 3 * (Math.PI/2);
     }
     if(currentlyPressedKeys[68] == true) //D key
     {
-        speed[0]= .205;
+        speed[0]= .1;
         player.rotation.y = Math.PI/2;
     }
     if(currentlyPressedKeys[87] == true) //W key
     { 
-        speed[2]= -.205;
+        speed[2]= -.1;
         player.rotation.y = Math.PI;
     }
     if(currentlyPressedKeys[83] == true) //S key
     { 
-        speed[2]= .205;
+        speed[2]= .1;
         player.rotation.y = 0;
     }
 
@@ -430,14 +457,14 @@ function update_position()
             if(Math.abs(obstacles[i].position.z - obsz[i]) >= obs_range[i])
             {
                 obs_velocity[i] = obs_velocity[i] * -1;
-            }
+            } 
             obstacles[i].position.z += obs_speed * obs_velocity[i];
         }
     }
 
     if(lognum == 30)
     {
-        console.log("x:" + player.position.x + " z: " + player.position.z);
+        // console.log("x:" + player.position.x + " z: " + player.position.z);
         lognum = 0;
     }
     
@@ -450,5 +477,10 @@ function render()
     detect_collisions();
     update_position();
     renderer.render(scene, camera);
-    requestAnimationFrame(render);
+
+    // set the timeout to 15 frames per second rather than 30
+    setTimeout( function() {
+        requestAnimationFrame( render );
+    }, 1000/15);
+    // requestAnimationFrame(render);
 }
