@@ -1,5 +1,6 @@
 var scene, player, cube, speed, score = 0, level = 0;
 var scoreText;
+var animationSpeed = 0; // Used to control the player animation
 var currentlyPressedKeys= [];
 var collidableMeshes = [];
 var obstacles = [], treasures = [];
@@ -221,34 +222,41 @@ function reset()
     
 function handle_input()
 {
+    speedFactor = .1;
     speed = [0,0,0];
-
+    animationSpeed = 0;
     if(currentlyPressedKeys[65] == true) //A key
     {
-       speed[0]= -.1;
+       speed[0]= -speedFactor;
        player.rotation.y = 3 * (Math.PI/2);
+       animationSpeed = 1;
     }
-    if(currentlyPressedKeys[68] == true) //D key
+    else if(currentlyPressedKeys[68] == true) //D key
     {
-        speed[0]= .1;
+        speed[0]= speedFactor;
         player.rotation.y = Math.PI/2;
+        animationSpeed = 1;
     }
     if(currentlyPressedKeys[87] == true) //W key
     { 
-        speed[2]= -.1;
+        speed[2]= -speedFactor;
         player.rotation.y = Math.PI;
+        animationSpeed = 1;
     }
     if(currentlyPressedKeys[83] == true) //S key
     { 
-        speed[2]= .1;
+        speed[2]= speedFactor;
         player.rotation.y = 0;
+        animationSpeed = 1;
     }
+
 
     if(currentlyPressedKeys[16] == true) //ShiftKey
     {
+        animationSpeed = 1.5
         for(var i = 0; i < speed.length; i++)
         {
-            speed[i] = speed[i] * 1.5;
+            speed[i] = speed[i] * 2;
         }
     }
 	//Development commands
@@ -302,7 +310,7 @@ function detect_end()
     r2 = Math.sqrt((endx - playx) * (endx - playx) + (endz - playz) * (endz - playz));
     if(r2 < r1)
     {
-        alert("PUT SOMETHING HERE");
+        alert("Congratulations! You reached the end!");
 		currentlyPressedKeys= [];
         reset();
         add_obstacle();
@@ -459,9 +467,15 @@ function animate()
 {
     // var delta = clock.getDelta();
     // console.log("mixers length: " + mixers.length);
-    if (mixers.length > 0)        
-        mixers[0].update(.05);
-    
+    if(animationSpeed > 0)
+    {
+        if (mixers.length > 0)        
+            mixers[0].update(animationSpeed * .05);
+    }
+    else
+    {
+
+    }
     // --- Too many calls to requestAnimationFrame caused slowdown. Now only 1 per frame in the render function
     // set the timeout to 15 frames per second rather than 30
     // setTimeout( function() {
@@ -475,8 +489,8 @@ function animate()
 
 function render()
 {
-    animate()
     handle_input();
+    animate()
     detect_collisions();
     update_position();
     renderer.render(scene, camera);
