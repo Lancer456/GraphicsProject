@@ -23,6 +23,7 @@ function create_treasures()
 
     // Loads in the treasure box Model
     var loader = new THREE.OBJLoader( );
+    // Model from TurboSquid.com
     loader.load( './Components/treasure_chest.obj', function ( object ) 
     {
         //object.scale.set(0.01, 0.01, 0.01);

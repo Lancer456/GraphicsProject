@@ -1,10 +1,9 @@
 var scene, player, cube, speed, score = 0, level = 0;
-var scoreText;
+var scoreText = new THREE.Object3D();
 var animationSpeed = 0; // Used to control the player animation
 var currentlyPressedKeys= [];
 var collidableMeshes = [];
 var obstacles = [], treasures = [];
-// var interactable = [];  // Removed because it wasn't being used
 
 // for player model animation
 var mesh, action = {}, mixer, fadeAction;
@@ -51,7 +50,7 @@ window.onload= function init(){
 
     // Create Floor
 	var geometry= new THREE.PlaneGeometry(100, 100, 32);
-	var floorTexture= new THREE.ImageUtils.loadTexture('./Components/stone_floor.jpg');
+	var floorTexture= new THREE.ImageUtils.loadTexture('./Components/stone2.jpg');
 	floorTexture.wrapS= floorTexture.wrapT= THREE.RepeatWrapping;
 	floorTexture.repeat.set(20, 20);
 	
@@ -76,7 +75,7 @@ window.onload= function init(){
     init_lighting();
 
     //Add text on the screen
-    fix_text();
+    //fix_text();
 
     //Initializing level compnonets
 	setupMaze();
@@ -90,26 +89,44 @@ window.onload= function init(){
 
 function fix_text()
 {
+    
     if(scoreText != null)
     {
         scene.remove(scoreText);
     }
-    var textGeometry = new THREE.TextGeometry( "Score: " + score, 
+    
+    var loader = new THREE.FontLoader();
+
+    loader.load( 'fonts/helvetiker_regular.typeface.js', function ( font ) 
     {
-        size: .05,
-        height: .005,
-        curveSegments: 12,
+            var textGeometry = new THREE.TextGeometry( "Score: " + score, 
+            {
+                font: font,
+                size: .05,
+                height: .005,
+                curveSegments: 12,
+                
+            });
 
-    });
+            var textMaterial = new THREE.MeshBasicMaterial( 
+            { color: 0xff0000 }
 
-    var textMaterial = new THREE.MeshBasicMaterial( 
-        { color: 0xff0000 }
-    );
+            );
+
+            scoreText = new THREE.Mesh( textGeometry, textMaterial );
+
+                
+            scoreText.position.set(player.position.x - .5, 5, player.position.z);
+            
+            scoreText.rotation.x =  -Math.PI/2 + .5; //Set to match camera angle
+            scene.add( scoreText );
+
+    } );
     //  -2.5, 2, 48
-    scoreText = new THREE.Mesh( textGeometry, textMaterial );
-    scoreText.position.set(player.position.x - .5, 5, player.position.z + 2);
-    scoreText.rotation.x =  -Math.PI/2 + .5; //Set to match camera angle
-    scene.add( scoreText );
+
+    // console.log(scoreText.vertices)
+
+    // scoreText.position.set(0, 25, 0)
 }
 
 function create_obstacles()
@@ -162,7 +179,6 @@ function create_player()
 
     // Loads in player
 
-
     var loader = new THREE.JSONLoader();
 
     loader.load( './components/sam_textured_rigged_animated.json' , function( geometry, materials ) {
@@ -180,7 +196,6 @@ function create_player()
 
         action.idle = mixer.clipAction( mesh.geometry.animations[0] );
         
-
         mesh.position.set(-2.5, 0, 48);
         mesh.rotation.y = Math.PI;
         player = mesh;
@@ -216,7 +231,7 @@ function reset()
     camera.position.x= player.position.x;
 	camera.position.y= 7;
 	camera.position.z= player.position.z+2.5;
-    scoreText.position.set(player.position.x - .5, 5, player.position.z + 2);
+    // fix_text();
 }
     
 function handle_input()
@@ -282,16 +297,16 @@ function handle_input()
 	//Z to move player to near exit
 	//X to toggle collision detection with walls
 	//C to toggle obstacle detection
-    // if(currentlyPressedKeys[81] == true) //Q key
-    // {
-	// 	camera.position.y -= 1;
-	// 	camera.position.z -= .25;
-    // }
-	// if(currentlyPressedKeys[69] == true) //E key
-    // {
-	// 	camera.position.y += 1;
-	// 	camera.position.z += .25;
-    // }
+    if(currentlyPressedKeys[81] == true) //Q key
+    {
+		camera.position.y -= 1;
+		camera.position.z -= .25;
+    }
+	if(currentlyPressedKeys[69] == true) //E key
+    {
+		camera.position.y += 1;
+		camera.position.z += .25;
+    }
 	if(currentlyPressedKeys[90] == true) //Z key
 	{
 		teleport([-2.5, 1, -42])	
@@ -312,7 +327,7 @@ function teleport(position) // Teleports player and associated objects to a spec
     camera.position.x= player.position.x;
     camera.position.y= 7;
     camera.position.z= player.position.z+2.5;
-    fix_text();
+    // fix_text();
 }
 
 function detect_end()
@@ -328,7 +343,7 @@ function detect_end()
     r2 = Math.sqrt((endx - playx) * (endx - playx) + (endz - playz) * (endz - playz));
     if(r2 < r1)
     {
-        alert("Congratulations! You reached the end!");
+        alert("Congratulations! Your final score was " + score);
 		currentlyPressedKeys= [];
         reset();
         add_obstacle();
@@ -350,7 +365,7 @@ function obstacle_collison()
             if(r2<r1)
             {
                 score -= 50;
-                fix_text()
+                // fix_text()
                 reset();
             }
         }
@@ -377,7 +392,7 @@ function treasure_collision()
                 collidableMeshes.splice(loc, 1);
             }
             treasures.splice(i, 1);
-            fix_text()
+            // fix_text()
 
         }
     }
@@ -473,6 +488,8 @@ function update_position()
     if(lognum == 30)
     {
         console.log("x:" + player.position.x + " z: " + player.position.z);
+        console.log(scoreText.position)
+        
         lognum = 0;
     }
     
@@ -490,7 +507,7 @@ function animate()
     }
     else
     {
-
+        // Intended to reset the animation to a rest position if it is not active. Don't know how yet
     }
     // --- Too many calls to requestAnimationFrame caused slowdown. Now only 1 per frame in the render function
     // set the timeout to 15 frames per second rather than 30
