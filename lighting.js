@@ -1,8 +1,8 @@
 var lightPositions = [
-    [-2.5, 2, 48], [20, 1.25, 37.5], [22, 1.25, 41],
-    [25, 1.25, 48], [27, 1.25, 27], [47, 1.25, 45], 
-    [47, 1.25, 32], [47, 1.25, 8.5], [38, 1.25, 18],
-    [19, 1.25, 2.5], [28, 1.25, -2.5], [17, 1.25, -28]
+    [-2.5, 2.5 , 48], [20, 2, 37.5], [22, 2, 41],
+    [25, 2, 48], [27, 2, 27], [47, 2, 45], 
+    [47, 2, 32], [47, 2, 8.5], [38, 2, 18],
+    [19, 2, 2.5], [28, 2, -2.5], [17, 2, -28]
 ];
 
 var lights = [];
@@ -17,7 +17,7 @@ function init_lighting()
     var spriteTexture= new THREE.ImageUtils.loadTexture('./Components/disc.png');
 
     var sprite = new THREE.Sprite( new THREE.SpriteMaterial( { map: spriteTexture, color: 0xe1ad24} ) );
-    sprite.scale.set( .1, .1 , .1 );
+    sprite.scale.set( .08, .08 , .08 );
     pointLight.add( sprite );
     for(var i=0; i< lightPositions.length; i++)
     {
@@ -38,8 +38,8 @@ function move_lights()
     for(var i=0; i< lights.length; i++)
     {
         var light = lights[i];
-        light.position.x += Math.sin( time ) * .01;
-        light.position.y += Math.cos( time ) * .01;
-		light.position.z += Math.cos( time ) * .01;
+        light.position.x += Math.sin( time ) * .02;
+        light.position.y += Math.cos( time ) * .02;
+		light.position.z += Math.cos( time ) * .02;
     }
 }
