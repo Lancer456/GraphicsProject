@@ -83,7 +83,6 @@ window.onload= function init(){
     create_obstacles();
     create_treasures();
 
-
     renderer.render(scene, camera);
     render();
     animate();
@@ -240,17 +239,37 @@ function handle_input()
     if(currentlyPressedKeys[87] == true) //W key
     { 
         speed[2]= -speedFactor;
-        player.rotation.y = Math.PI;
         animationSpeed = 1;
+        if(currentlyPressedKeys[65])
+        {
+            player.rotation.y = -3 * Math.PI / 4
+        }
+        else if(currentlyPressedKeys[68])
+        {
+            player.rotation.y = 3 * Math.PI / 4;
+        }
+        else
+        {
+            player.rotation.y = Math.PI;
+        }
     }
     if(currentlyPressedKeys[83] == true) //S key
     { 
         speed[2]= speedFactor;
-        player.rotation.y = 0;
         animationSpeed = 1;
+        if(currentlyPressedKeys[65])
+        {
+            player.rotation.y = -Math.PI / 4
+        }
+        else if(currentlyPressedKeys[68])
+        {
+            player.rotation.y = Math.PI / 4;
+        }
+        else
+        {
+            player.rotation.y = 0;
+        }
     }
-
-
     if(currentlyPressedKeys[16] == true) //ShiftKey
     {
         animationSpeed = 1.5
@@ -263,20 +282,19 @@ function handle_input()
 	//Z to move player to near exit
 	//X to toggle collision detection with walls
 	//C to toggle obstacle detection
-    if(currentlyPressedKeys[81] == true) //Q key
-    {
-		camera.position.y -= 1;
-		camera.position.z -= .25;
-    }
-	if(currentlyPressedKeys[69] == true) //E key
-    {
-		camera.position.y += 1;
-		camera.position.z += .25;
-    }
+    // if(currentlyPressedKeys[81] == true) //Q key
+    // {
+	// 	camera.position.y -= 1;
+	// 	camera.position.z -= .25;
+    // }
+	// if(currentlyPressedKeys[69] == true) //E key
+    // {
+	// 	camera.position.y += 1;
+	// 	camera.position.z += .25;
+    // }
 	if(currentlyPressedKeys[90] == true) //Z key
 	{
-		teleport([-2.5, 1, -42])
-		
+		teleport([-2.5, 1, -42])	
 	}
 	if(currentlyPressedKeys[88] == true) //X key
 	{
@@ -318,8 +336,6 @@ function detect_end()
 }
 
 //collision detection for the obstacles
-// I might be able to combine this with collision detection in detect_collisions() -- Wesley
-// Nevermind I gave up...
 function obstacle_collison()
 {
 	if(obDetect == true)
