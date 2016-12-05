@@ -1,9 +1,10 @@
 var scene, player, cube, speed, score = 0, level = 0;
-var scoreText = new THREE.Object3D();
 var animationSpeed = 0; // Used to control the player animation
 var currentlyPressedKeys= [];
 var collidableMeshes = [];
 var obstacles = [], treasures = [];
+
+var scoreText = document.createElement('div');
 
 // for player model animation
 var mesh, action = {}, mixer, fadeAction;
@@ -75,7 +76,7 @@ window.onload= function init(){
     init_lighting();
 
     //Add text on the screen
-    //fix_text();
+    init_text();
 
     //Initializing level compnonets
 	setupMaze();
@@ -85,48 +86,22 @@ window.onload= function init(){
     renderer.render(scene, camera);
     render();
     animate();
+
+
 }
 
-function fix_text()
+function init_text()
 {
-    
-    if(scoreText != null)
-    {
-        scene.remove(scoreText);
-    }
-    
-    var loader = new THREE.FontLoader();
-
-    loader.load( 'fonts/helvetiker_regular.typeface.js', function ( font ) 
-    {
-            var textGeometry = new THREE.TextGeometry( "Score: " + score, 
-            {
-                font: font,
-                size: .05,
-                height: .005,
-                curveSegments: 12,
-                
-            });
-
-            var textMaterial = new THREE.MeshBasicMaterial( 
-            { color: 0xff0000 }
-
-            );
-
-            scoreText = new THREE.Mesh( textGeometry, textMaterial );
-
-                
-            scoreText.position.set(player.position.x - .5, 5, player.position.z);
-            
-            scoreText.rotation.x =  -Math.PI/2 + .5; //Set to match camera angle
-            scene.add( scoreText );
-
-    } );
-    //  -2.5, 2, 48
-
-    // console.log(scoreText.vertices)
-
-    // scoreText.position.set(0, 25, 0)
+    // Code from http://stackoverflow.com/questions/15248872/dynamically-create-2d-text-in-three-js
+    scoreText.style.position = 'absolute';
+    //text2.style.zIndex = 1;    // if you still don't see the label, try uncommenting this
+    scoreText.style.width = 100;
+    scoreText.style.height = 100;
+    scoreText.style.color = "red";
+    scoreText.innerHTML = "Score:" + score;
+    scoreText.style.top = 30 + 'px';
+    scoreText.style.left = 30 + 'px';
+    document.body.appendChild(scoreText);
 }
 
 function create_obstacles()
@@ -321,7 +296,10 @@ function handle_input()
 	}
 }
 
-function teleport(position) // Teleports player and associated objects to a specified position
+// Teleports player and associated objects to a specified position
+// Can be used from developer console for quick debugging/movement
+// Position is an array [x, y, z]
+function teleport(position) 
 {
     player.position.set(position[0], position[1], position[2]);
     camera.position.x= player.position.x;
@@ -365,7 +343,7 @@ function obstacle_collison()
             if(r2<r1)
             {
                 score -= 50;
-                // fix_text()
+                scoreText.innerHTML = "Score:" + score;
                 reset();
             }
         }
@@ -392,7 +370,7 @@ function treasure_collision()
                 collidableMeshes.splice(loc, 1);
             }
             treasures.splice(i, 1);
-            // fix_text()
+            scoreText.innerHTML = "Score:" + score;
 
         }
     }
@@ -457,11 +435,9 @@ function update_position()
     lognum++;
     camera.position.x += speed[0];
     player.position.x += speed[0];
-    scoreText.position.x += speed[0];
 
     camera.position.z += speed[2];
     player.position.z += speed[2];
-    scoreText.position.z += speed[2];
 
     // Handles movement of obstacles
     for(var i = 0; i < obstacles.length; i++)
@@ -488,7 +464,6 @@ function update_position()
     if(lognum == 30)
     {
         console.log("x:" + player.position.x + " z: " + player.position.z);
-        console.log(scoreText.position)
         
         lognum = 0;
     }
