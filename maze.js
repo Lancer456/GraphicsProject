@@ -138,7 +138,7 @@ function setupMaze(){
 	}
 	
 	var geometry= new THREE.CubeGeometry(5, 0, 5);
-	var material= new THREE.MeshLambertMaterial({ color: 0x990066, transparent: true, opacity: 0.25 });
+	var material= new THREE.MeshPhongMaterial({ color: 0x990066, transparent: true, opacity: 0.25 });
 	exit= new THREE.Mesh(geometry, material);
 	exit.position.set(-2.5, 0.1, -47.5);
 	scene.add(exit);
@@ -149,7 +149,7 @@ function outerWalls(){
 	wallTexture.wrapS= wallTexture.wrapT= THREE.RepeatWrapping;
 	wallTexture.repeat.set(20, 1);
 	
-	var wallMaterial= new THREE.MeshLambertMaterial({ map: wallTexture });
+	var wallMaterial= new THREE.MeshPhongMaterial({ map: wallTexture });
 	var wallGeometry= new THREE.CubeGeometry(0.6, 3, 100.5);
 	
 	var bottomWall= new THREE.Mesh(wallGeometry, wallMaterial);

@@ -44,7 +44,7 @@ window.onload= function init(){
 	floorTexture.wrapS= floorTexture.wrapT= THREE.RepeatWrapping;
 	floorTexture.repeat.set(20, 20);
 	
-	var material= new THREE.MeshLambertMaterial({ map: floorTexture, side: THREE.DoubleSide });
+	var material= new THREE.MeshPhongMaterial({ map: floorTexture, side: THREE.DoubleSide });
 	plane= new THREE.Mesh(geometry, material);
 	plane.rotation.x= Math.PI/2;
 
@@ -84,16 +84,16 @@ function init_text()
     // Code from http://stackoverflow.com/questions/15248872/dynamically-create-2d-text-in-three-js
     scoreText.style.position = 'absolute';
     //text2.style.zIndex = 1;    // if you still don't see the label, try uncommenting this
-    scoreText.style.width = 100;
-    scoreText.style.height = 100;
+    scoreText.style.width = 200;
+    scoreText.style.height = 200;
+    scoreText.style.fontSize = 30 + "px";
+    scoreText.style.fontFamily = "old english text mt";
     scoreText.style.color = "red";
     scoreText.innerHTML = "Score:" + score;
     scoreText.style.top = 30 + 'px';
     scoreText.style.left = 30 + 'px';
     document.body.appendChild(scoreText);
 }
-
-
 
 function create_player()
 {

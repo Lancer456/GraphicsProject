@@ -1,8 +1,12 @@
 var lightPositions = [
-    [-2.5, 2.5 , 48], [20, 2, 37.5], [22, 2, 41],
-    [25, 2, 48], [27, 2, 27], [47, 2, 45], 
-    [47, 2, 32], [47, 2, 8.5], [38, 2, 18],
-    [19, 2, 2.5], [28, 2, -2.5], [17, 2, -28]
+    [-2.5, 3 , 48], [-2, 2.5, 47], [20, 3, 37.5], [22, 3, 41],
+    [25, 3, 48], [27, 3, 27], [47, 3, 45], 
+    [47, 3, 32], [47, 3, 8.5], [38, 3, 18],
+    [19, 3, 2.5], [28, 3, -2.5], [17, 3, -28],
+    [12, 3, 48], [30, 3, 37.5], [30, 3, 28], [30.5, 2.5, 27.5],
+    [32, 3, 23], [41, 3, 30], [46, 3, 45], 
+    [45.5, 3, 45.5], [46.5, 2.75, 46], [37, 2.5, 1,4], 
+    [39, 3, -3.5], [38.5, 3, -2], [37.7, 2.5, 28]
 ];
 
 var lights = [];
@@ -11,13 +15,14 @@ var lights = [];
 
 function init_lighting()
 {
-	var pointLight= new THREE.PointLight(0xe1ad24, 1, 10);
+	var pointLight= new THREE.PointLight(0xe1ad24, 1.5, 6);
     // var sprite = new THREE.Sprite( new THREE.SpriteCanvasMaterial( { color: 0xff0040} ) );
 
-    var spriteTexture= new THREE.ImageUtils.loadTexture('./Components/disc.png');
+    var spriteTexture= new THREE.ImageUtils.loadTexture('./Components/spark1.png');
 
-    var sprite = new THREE.Sprite( new THREE.SpriteMaterial( { map: spriteTexture, color: 0xe1ad24} ) );
+    var sprite = new THREE.Sprite( new THREE.SpriteMaterial( { map: spriteTexture, color: 0xffae3f} ) );
     sprite.scale.set( .08, .08 , .08 );
+    sprite.position.set(pointLight.position.x, pointLight.position.y, pointLight.position.z)
     pointLight.add( sprite );
     for(var i=0; i< lightPositions.length; i++)
     {
@@ -27,7 +32,7 @@ function init_lighting()
         scene.add(newLight);
     }
 
-    var ambientLight= new THREE.AmbientLight(0x404040);
+    var ambientLight= new THREE.AmbientLight(0x252525);
     scene.add(ambientLight);
 }
 
