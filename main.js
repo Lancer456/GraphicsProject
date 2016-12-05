@@ -325,27 +325,7 @@ function update_position()
     camera.position.z += speed[2];
     player.position.z += speed[2];
 
-    // Handles movement of obstacles
-    for(var i = 0; i < obstacles.length; i++)
-    {
-        
-        if(obs_direction[i] == 'x')
-        {   
-            if(Math.abs(obstacles[i].position.x - obsx[i]) >= obs_range[i])
-            {
-                obs_velocity[i] = obs_velocity[i] * -1;
-            }
-            obstacles[i].position.x += obs_speed * obs_velocity[i];
-        }
-        else if(obs_direction[i] == 'z')
-        {
-            if(Math.abs(obstacles[i].position.z - obsz[i]) >= obs_range[i])
-            {
-                obs_velocity[i] = obs_velocity[i] * -1;
-            } 
-            obstacles[i].position.z += obs_speed * obs_velocity[i];
-        }
-    }
+    move_obstacles();
 
     if(lognum == 30)
     {
