@@ -325,7 +325,8 @@ function update_position()
     camera.position.z += speed[2];
     player.position.z += speed[2];
 
-    move_obstacles();
+    move_obstacles(); // obstacles.js
+    move_lights(); // lights.js
 
     if(lognum == 30)
     {
@@ -334,7 +335,6 @@ function update_position()
         lognum = 0;
     }
     
-
 }
 
 function animate() 

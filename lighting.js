@@ -5,6 +5,10 @@ var lightPositions = [
     [19, 1.25, 2.5], [28, 1.25, -2.5], [17, 1.25, -28]
 ];
 
+var lights = [];
+
+// Sprites and movement inspired by https://github.com/mrdoob/three.js/blob/master/examples/js/renderers/CanvasRenderer.js
+
 function init_lighting()
 {
 	var pointLight= new THREE.PointLight(0xe1ad24, 1, 10);
@@ -19,9 +23,23 @@ function init_lighting()
     {
         var newLight = pointLight.clone();
         newLight.position.set(lightPositions[i][0], lightPositions[i][1], lightPositions[i][2])
+        lights.push(newLight);
         scene.add(newLight);
     }
 
     var ambientLight= new THREE.AmbientLight(0x404040);
     scene.add(ambientLight);
+}
+
+function move_lights()
+{
+    var time = Date.now() * 0.0005;
+
+    for(var i=0; i< lights.length; i++)
+    {
+        var light = lights[i];
+        light.position.x += Math.sin( time ) * .01;
+        light.position.y += Math.cos( time ) * .01;
+		light.position.z += Math.cos( time ) * .01;
+    }
 }
