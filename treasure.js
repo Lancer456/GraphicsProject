@@ -52,3 +52,29 @@ function create_treasures()
 
     
 }
+
+function treasure_collision()
+{
+    var r1, r2;
+    var playx = player.position.x;
+    var playz = player.position.z;
+    r1 = 1 + .5 /*player radius*/;
+    for(var i = treasures.length-1; i >=0; i--)
+    {
+        r2 = Math.sqrt( Math.pow((playx - treasures[i].position.x), 2) + Math.pow((playz - treasures[i].position.z), 2));
+        if(r2<r1)
+        {
+            // Increment Score and remove the treasure so it can only be picked up once
+            score += 50;
+            scene.remove(treasures[i])
+            var loc = collidableMeshes.indexOf(treasures[i]);
+            if(loc != -1)
+            {
+                collidableMeshes.splice(loc, 1);
+            }
+            treasures.splice(i, 1);
+            scoreText.innerHTML = "Score:" + score;
+
+        }
+    }
+}
