@@ -7,6 +7,7 @@ var obs_direction;
 var obs_velocity;
 var obs_range;
 var obs_speed;
+var loader, drone;
 
 function create_obstacles()
 {
@@ -56,14 +57,22 @@ function add_obstacle()
 {
      if(level < obsx.length)
      {
-        //creates an obstacle
-        var obstacleMaterial = new THREE.MeshLambertMaterial({color: 0x890000});
-        var obstacleGeom = new THREE.SphereGeometry(.75, 50);
-        obstacles.push(new THREE.Mesh(obstacleGeom, obstacleMaterial));
-        obstacles[level].position.set(obsx[level], 1, obsz[level]);
+        drone = new THREE.Object3D();
 
-        scene.add(obstacles[level]);
-        level++;
+        loader = new THREE.JSONLoader();
+        //load a resource
+        loader.load( './Components/Feather1.json' , function ( geometry, materials ) {
+                var material = new THREE.MultiMaterial( materials );
+                var object = new THREE.Mesh( geometry, material );
+                // object.scale.set(.5,.5,.5);
+                drone = object;
+                // scene.add( drone );
+                obstacles.push(drone);
+                obstacles[level].position.set(obsx[level], 1, obsz[level]);
+                scene.add(obstacles[level]);
+                level++;
+            }
+        );
      }
 }
 
@@ -77,6 +86,7 @@ function move_obstacles()
         {   
             if(Math.abs(obstacles[i].position.x - obsx[i]) >= obs_range[i])
             {
+                
                 obs_velocity[i] = obs_velocity[i] * -1;
             }
             obstacles[i].position.x += obs_speed * obs_velocity[i];

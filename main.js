@@ -1,4 +1,4 @@
-var scene, player, cube, speed, score = 0, level = 0;
+var scene, player, drone, cube, speed, score = 0, level = 0;
 var animationSpeed = 0; // Used to control the player animation
 var currentlyPressedKeys= [];
 var collidableMeshes = [];
@@ -129,6 +129,7 @@ function create_player()
 
 
     player.position.set(-2.5, 0, 48);
+
 }
 
 
