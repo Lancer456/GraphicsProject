@@ -264,8 +264,7 @@ function detect_end()
 
 function detect_collisions()
 {
-    // Collision detection inspired by view-source:http://stemkoski.github.io/Three.js/Collision-Detection.html
-    //and http://webmaestro.fr/collisions-detection-three-js-raycasting/
+    // (Who:Unknown, What: Raycasting collision detection implementation, When: Nov 2016, Where: http://webmaestro.fr/collisions-detection-three-js-raycasting/ )
 
     detect_end();
     obstacle_collison(); // Located in obstacles.js
