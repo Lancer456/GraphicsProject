@@ -11,7 +11,7 @@ var lightPositions = [
     [47.5, 3, -3], [47, 2.5, -3], [34, 3, -12.6],
     [44.8, 3, -23], [29.8, 3, -43], [16, 3, -42.6],
     [5.6, 3, -37.6], [20.4, 3, 12.5], [12, 3, 15],
-    [12, 3, 2.7]
+    [12, 3, 2.7],
 */
 
     [-2.5, 3, -44], [-2.7, 4, -43], [-2.4, 2.5, -45], [-2.5, 3.1, -44]
@@ -21,7 +21,7 @@ var lightPositions = [
 
 var lights = [];
 
-// Sprites and movement inspired by https://github.com/mrdoob/three.js/blob/master/examples/js/renderers/CanvasRenderer.js
+// (Who: mrdoob, What: PointLight spriting, When: Dec 5, 2016, Where: https://github.com/mrdoob/three.js/blob/master/examples/js/renderers/CanvasRenderer.js )
 
 function init_lighting()
 {

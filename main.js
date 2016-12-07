@@ -81,9 +81,8 @@ window.onload= function init(){
 
 function init_text()
 {
-    // Code from http://stackoverflow.com/questions/15248872/dynamically-create-2d-text-in-three-js
+    // (Who:username 'kronus', What: code for html text over the canvas, When: Dec. 5, 2016, Where: http://stackoverflow.com/questions/15248872/dynamically-create-2d-text-in-three-js)
     scoreText.style.position = 'absolute';
-    //text2.style.zIndex = 1;    // if you still don't see the label, try uncommenting this
     scoreText.style.width = 200;
     scoreText.style.height = 200;
     scoreText.style.fontSize = 30 + "px";
